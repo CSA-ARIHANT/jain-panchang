@@ -1,4 +1,4 @@
-<title>भीलवाड़ा श्रमण संघ  जैन पंचांग</title>
+<title>भीलवाड़ा जैन पंचांग</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap">
@@ -205,13 +205,20 @@ button:focus-visible, .datepick:focus-within { outline: 2px solid var(--accent);
 .fb-send { border: 0; flex: none; }
 .place-sel { max-width: 62%; font: inherit; font-size: 0.9rem; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 6px 8px; }
 .place-sel:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.loc-wrap { display: flex; align-items: center; gap: 6px; max-width: 70%; min-width: 0; }
+.loc-wrap .place-sel { max-width: none; min-width: 0; flex: 1; }
+.gps-btn { flex: none; width: 36px; height: 36px; border: 1px solid var(--accent); border-radius: 10px; background: transparent; color: var(--accent); font-size: 1.05rem; line-height: 1; }
+.gps-btn[disabled] { opacity: 0.5; }
+.gps-msg { margin: -6px 2px 0; font-size: 0.82rem; color: var(--muted); }
+.gps-msg:empty { display: none; }
 </style>
 
 <main class="app">
   <header class="top">
-    <div class="brand">श्रमण संघ  जैन पंचांग</div>
-    <select class="place-sel" id="citySel" aria-label="शहर चुनें"></select>
+    <div class="brand">जैन पंचांग</div>
+    <div class="loc-wrap"><button type="button" class="gps-btn" id="gpsBtn" aria-label="मेरी लोकेशन" title="मेरी लोकेशन">&#128205;</button><select class="place-sel" id="citySel" aria-label="शहर चुनें"></select></div>
   </header>
+  <p class="gps-msg" id="gpsMsg" role="status"></p>
   <div id="diag" style="font-size:13px;color:#8a2a1f;padding:0 2px 8px;word-break:break-word">यह व्यूअर स्क्रिप्ट नहीं चला रहा, इसलिए तारीख़ और पंचांग नहीं दिख रहे। इस फ़ाइल को Safari/Chrome जैसे ब्राउज़र में खोलें, या Claude ऐप में आर्टिफ़ैक्ट से देखें।</div>
   <script>
     window.onerror = function (m, u, l, c) { var d = document.getElementById('diag'); if (d) d.textContent = 'JS त्रुटि: ' + m + ' (' + l + ':' + c + ')'; };
@@ -344,14 +351,14 @@ button:focus-visible, .datepick:focus-within { outline: 2px solid var(--accent);
     </div>
   </section>
 
-  <p class="note">गणना <span id="noteLoc">भीलवाड़ा (25.34° उ., 74.63° पू.)</span> के सूर्योदय और सूर्यास्त पर आधारित है। त्यौहारों में वद पक्ष का मास गुजराती (अमान्त) गणना से लिखा है, जैसा श्रमण संघ  जैन पंचांग ऐप में है। मारवाड़ी (पूर्णिमान्त) गणना में वद पक्ष का मास अगला होता है, इसीलिए ऊपर की तारीख़ में वह अगला मास दिखता है। धनतेरस और दीवाली में संध्या की तिथि, कालीचौदस में मध्यरात्रि की तिथि और नवपद ओली की शुरुआत में तिथि का पहला दिन माना गया है। बाकी पर्वों में सूर्योदय की तिथि ली है, तिथि घटने पर पिछला दिन और बढ़ने पर अगला दिन। पक्खी की तारीख़ें श्रमण संघीय पक्खी पत्र 2026-27 से ली हैं, और ओली, दीवाली, निर्वाण कल्याणक, संवत्सरी और ज्ञानपंचमी की तारीख़ें उसी से मिलाई गई हैं। पर्व और संवत्सरी तय करने से पहले स्थानीय पंचांग से मिलान करें। जैन पर्व और कल्याणक की सूची पद्मोदय जैन कैलेंडर 2026 से ली गई है और सिर्फ़ 2026 के लिए है; कैलेंडर की तिथियाँ भीलवाड़ा की गणना से जाँची गई हैं। दूसरे शहरों में सूर्योदय-सूर्यास्त और तिथि का समय उस शहर के हिसाब से बदलता है; पक्खी और पर्व की तारीख़ें भीलवाड़ा के पंचांग से ली गई हैं, इसलिए कभी-कभी स्थानीय पंचांग से एक दिन का अंतर संभव है।</p>
+  <p class="note">गणना <span id="noteLoc">भीलवाड़ा (25.34° उ., 74.63° पू.)</span> के सूर्योदय और सूर्यास्त पर आधारित है। त्यौहारों में वद पक्ष का मास गुजराती (अमान्त) गणना से लिखा है, जैसा जैन पंचांग ऐप में है। मारवाड़ी (पूर्णिमान्त) गणना में वद पक्ष का मास अगला होता है, इसीलिए ऊपर की तारीख़ में वह अगला मास दिखता है। धनतेरस और दीवाली में संध्या की तिथि, कालीचौदस में मध्यरात्रि की तिथि और नवपद ओली की शुरुआत में तिथि का पहला दिन माना गया है। बाकी पर्वों में सूर्योदय की तिथि ली है, तिथि घटने पर पिछला दिन और बढ़ने पर अगला दिन। पक्खी की तारीख़ें श्रमण संघीय पक्खी पत्र 2026-27 से ली हैं, और ओली, दीवाली, निर्वाण कल्याणक, संवत्सरी और ज्ञानपंचमी की तारीख़ें उसी से मिलाई गई हैं। पर्व और संवत्सरी तय करने से पहले स्थानीय पंचांग से मिलान करें। जैन पर्व और कल्याणक की सूची पद्मोदय जैन कैलेंडर 2026 से ली गई है और सिर्फ़ 2026 के लिए है; कैलेंडर की तिथियाँ भीलवाड़ा की गणना से जाँची गई हैं। दूसरे शहरों में सूर्योदय-सूर्यास्त और तिथि का समय उस शहर के हिसाब से बदलता है; पक्खी और पर्व की तारीख़ें भीलवाड़ा के पंचांग से ली गई हैं, इसलिए कभी-कभी स्थानीय पंचांग से एक दिन का अंतर संभव है।</p>
 </main>
 
 <script>
 (function(){var b=document.getElementById('fbSend');if(!b)return;
 b.addEventListener('click',function(){var n=document.getElementById('fbName').value.trim(),m=document.getElementById('fbMsg').value.trim();
 if(!m){document.getElementById('fbMsg').focus();return;}
-var cs=document.getElementById('citySel'),cn=cs&&cs.options[cs.selectedIndex]?cs.options[cs.selectedIndex].text:'भीलवाड़ा';var t='श्रमण संघ  जैन पंचांग ('+cn+') फीडबैक'+(n?'\nनाम: '+n:'')+'\n\n'+m;
+var cs=document.getElementById('citySel'),cn=cs&&cs.options[cs.selectedIndex]?cs.options[cs.selectedIndex].text:'भीलवाड़ा';var t='जैन पंचांग ('+cn+') फीडबैक'+(n?'\nनाम: '+n:'')+'\n\n'+m;
 window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');});})();
 </script>
 <script>
@@ -1023,23 +1030,55 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
     try { render(); }
     catch (e) { var t = document.getElementById('tithiName'); if (t) t.textContent = 'त्रुटि: ' + (e && e.message ? e.message : e); }
   }
-  function setLoc(i) {
-    var c = CITIES[i] || CITIES[0];
-    LAT = c[1]; LON = c[2]; LOCNAME = c[0];
-    var nl = $('noteLoc');
-    if (nl) nl.textContent = c[0].split(',')[0] + ' (' + Math.abs(c[1]).toFixed(2) + '° उ., ' + c[2].toFixed(2) + '° पू.)';
-    document.title = c[0].split(',')[0] + ' श्रमण संघ  जैन पंचांग';
-    try { localStorage.setItem('panchangCity', String(i)); } catch (e) {}
+  function setCoords(name, lat, lon) {
+    LAT = lat; LON = lon; LOCNAME = name;
+    var nl = $('noteLoc'), short = name.split(',')[0];
+    if (nl) nl.textContent = short + ' (' + Math.abs(lat).toFixed(2) + '° उ., ' + lon.toFixed(2) + '° पू.)';
+    document.title = short + ' जैन पंचांग';
+  }
+  function save(v) { try { localStorage.setItem('panchangCity', v); } catch (e) {} }
+  function setGpsOption(sel, lat, lon) {
+    var o = sel.querySelector('option[value="gps"]');
+    if (!o) { o = document.createElement('option'); o.value = 'gps'; sel.insertBefore(o, sel.firstChild); }
+    o.textContent = 'मेरी लोकेशन (' + lat.toFixed(2) + ', ' + lon.toFixed(2) + ')';
+    sel.value = 'gps';
   }
   (function initCity() {
-    var sel = $('citySel'), h = '', i, saved = 0;
+    var sel = $('citySel'), btn = $('gpsBtn'), msg = $('gpsMsg'), h = '', i, saved = '0';
     if (!sel) return;
     for (i = 0; i < CITIES.length; i++) h += '<option value="' + i + '">' + CITIES[i][0] + '</option>';
     sel.innerHTML = h;
-    try { var sv = parseInt(localStorage.getItem('panchangCity'), 10); if (sv >= 0 && sv < CITIES.length) saved = sv; } catch (e) {}
-    sel.value = String(saved);
-    setLoc(saved);
-    sel.addEventListener('change', function () { setLoc(parseInt(sel.value, 10)); safeRender(); });
+    try { saved = localStorage.getItem('panchangCity') || '0'; } catch (e) {}
+    var g = null;
+    if (saved.indexOf('gps:') === 0) {
+      var p = saved.split(':'); g = [parseFloat(p[1]), parseFloat(p[2])];
+      if (isNaN(g[0]) || isNaN(g[1])) g = null;
+    }
+    if (g) { setGpsOption(sel, g[0], g[1]); setCoords('मेरी लोकेशन', g[0], g[1]); }
+    else {
+      var n = parseInt(saved, 10); if (!(n >= 0 && n < CITIES.length)) n = 0;
+      sel.value = String(n); setCoords(CITIES[n][0], CITIES[n][1], CITIES[n][2]);
+    }
+    sel.addEventListener('change', function () {
+      if (sel.value === 'gps') return;
+      var n = parseInt(sel.value, 10);
+      setCoords(CITIES[n][0], CITIES[n][1], CITIES[n][2]); save(String(n)); msg.textContent = ''; safeRender();
+    });
+    btn.addEventListener('click', function () {
+      if (!navigator.geolocation) { msg.textContent = 'यह ब्राउज़र लोकेशन सुविधा नहीं देता। कृपया सूची से शहर चुनें।'; return; }
+      btn.disabled = true; msg.textContent = 'आपकी लोकेशन खोज रहे हैं…';
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        btn.disabled = false;
+        var la = pos.coords.latitude, lo = pos.coords.longitude;
+        if (la < 6 || la > 37.5 || lo < 68 || lo > 98) { msg.textContent = 'यह लोकेशन भारत के बाहर लगती है। पंचांग भारतीय समय (IST) पर आधारित है, इसलिए सूची से शहर चुनें।'; return; }
+        la = Math.round(la * 10000) / 10000; lo = Math.round(lo * 10000) / 10000;
+        setGpsOption(sel, la, lo); setCoords('मेरी लोकेशन', la, lo); save('gps:' + la + ':' + lo);
+        msg.textContent = 'आपकी लोकेशन के हिसाब से पंचांग दिख रहा है।'; safeRender();
+      }, function (err) {
+        btn.disabled = false;
+        msg.textContent = err && err.code === 1 ? 'लोकेशन की अनुमति नहीं मिली। ब्राउज़र की सेटिंग में अनुमति दें या सूची से शहर चुनें।' : 'लोकेशन नहीं मिल पाई। सूची से शहर चुनें।';
+      }, { enableHighAccuracy: false, timeout: 15000, maximumAge: 600000 });
+    });
   })();
   safeRender();
   var dg = $('diag'); if (dg && !/त्रुटि/.test($('tithiName').textContent)) dg.parentNode.removeChild(dg);
