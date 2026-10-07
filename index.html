@@ -211,6 +211,92 @@ button:focus-visible, .datepick:focus-within { outline: 2px solid var(--accent);
 .gps-btn[disabled] { opacity: 0.5; }
 .gps-msg { margin: -6px 2px 0; font-size: 0.82rem; color: var(--muted); }
 .gps-msg:empty { display: none; }
+
+/* ===== Glass look (Apple-style translucent surfaces) ===== */
+:root {
+  --page-bg: radial-gradient(760px 460px at 8% -4%, #F6C6BC 0%, transparent 62%), radial-gradient(640px 460px at 104% 16%, #F9E0A6 0%, transparent 58%), radial-gradient(760px 560px at -6% 102%, #E8B6C4 0%, transparent 62%), #F5F1F0;
+  --g-bg: rgba(255, 255, 255, 0.58);
+  --g-bg2: rgba(255, 255, 255, 0.42);
+  --g-bd: rgba(255, 255, 255, 0.8);
+  --g-hi: rgba(255, 255, 255, 0.95);
+  --g-sh: 0 10px 30px rgba(130, 40, 30, 0.12), 0 2px 6px rgba(130, 40, 30, 0.06);
+  --hero-grad: linear-gradient(160deg, #B02A22 0%, #8F1D18 55%, #6B130F 100%);
+  --hero-grad-n: linear-gradient(165deg, #3A1634 0%, #221538 55%, #120D2A 100%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page-bg: radial-gradient(760px 460px at 8% -4%, #5A1A17 0%, transparent 62%), radial-gradient(640px 460px at 104% 16%, #2A2050 0%, transparent 58%), radial-gradient(760px 560px at -6% 102%, #4A1830 0%, transparent 62%), #130E0F;
+    --g-bg: rgba(44, 30, 32, 0.55);
+    --g-bg2: rgba(255, 255, 255, 0.06);
+    --g-bd: rgba(255, 255, 255, 0.14);
+    --g-hi: rgba(255, 255, 255, 0.22);
+    --g-sh: 0 12px 32px rgba(0, 0, 0, 0.5);
+    --hero-grad: linear-gradient(160deg, #561B17 0%, #3B1412 55%, #260C0B 100%);
+    --hero-grad-n: linear-gradient(165deg, #2A1030 0%, #190F2E 55%, #0C0820 100%);
+  }
+}
+:root[data-theme="dark"] {
+  --page-bg: radial-gradient(760px 460px at 8% -4%, #5A1A17 0%, transparent 62%), radial-gradient(640px 460px at 104% 16%, #2A2050 0%, transparent 58%), radial-gradient(760px 560px at -6% 102%, #4A1830 0%, transparent 62%), #130E0F;
+  --g-bg: rgba(44, 30, 32, 0.55);
+  --g-bg2: rgba(255, 255, 255, 0.06);
+  --g-bd: rgba(255, 255, 255, 0.14);
+  --g-hi: rgba(255, 255, 255, 0.22);
+  --g-sh: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --hero-grad: linear-gradient(160deg, #561B17 0%, #3B1412 55%, #260C0B 100%);
+  --hero-grad-n: linear-gradient(165deg, #2A1030 0%, #190F2E 55%, #0C0820 100%);
+}
+html { min-height: 100%; }
+body { background: var(--page-bg); background-attachment: fixed; background-color: var(--bg); }
+
+.card, .datebar button.step, .datepick, #todayBtn, .seg, .place-sel, .gps-btn, .fb-form input, .fb-form textarea {
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  backdrop-filter: blur(22px) saturate(170%);
+}
+.card {
+  background: var(--g-bg); border: 1px solid var(--g-bd); border-radius: 24px;
+  box-shadow: var(--g-sh), inset 0 1px 0 var(--g-hi);
+}
+.datebar button.step, .datepick, .place-sel, .seg {
+  background: var(--g-bg); border: 1px solid var(--g-bd); border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(130, 40, 30, 0.08), inset 0 1px 0 var(--g-hi);
+}
+#todayBtn, .gps-btn { background: var(--g-bg2); border-radius: 16px; box-shadow: inset 0 1px 0 var(--g-hi); }
+.seg { border-radius: 14px; }
+.seg button { border-radius: 11px; }
+.seg button[aria-selected="true"] { box-shadow: 0 2px 8px rgba(163, 33, 27, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3); }
+.fb-form input, .fb-form textarea { background: var(--g-bg2); border: 1px solid var(--g-bd); }
+.rows li { border-radius: 14px; }
+.rows li.now, .rows li.next { box-shadow: inset 0 0 0 1px rgba(163, 33, 27, 0.18); }
+.cal-grid .cd { border-radius: 14px; }
+.cal-grid .cd.today { box-shadow: inset 0 1px 0 var(--g-hi); }
+
+.hero {
+  position: relative; overflow: hidden; border-radius: 30px; background: var(--hero-grad);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 18px 40px rgba(120, 20, 15, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.38), inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+}
+.hero.night { background: var(--hero-grad-n); box-shadow: 0 18px 40px rgba(10, 6, 30, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.28); }
+.hero::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 52%; z-index: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+}
+.hero::after {
+  content: ""; position: absolute; width: 220px; height: 220px; right: -70px; top: -90px; z-index: 0; pointer-events: none;
+  border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 70%);
+}
+.hero > * { position: relative; z-index: 1; }
+.hero > .phase { position: absolute; top: 16px; right: 16px; width: 46px; height: 46px; }
+.hero .hero-meta:first-child { padding-right: 56px; }
+.moon-dark { fill: rgba(255, 255, 255, 0.16); stroke: rgba(255, 255, 255, 0.4); stroke-width: 0.8; }
+.moon-lit { fill: #FFF3CF; }
+.moon-glow { fill: #FFF3CF; fill-opacity: 0.18; }
+.star { fill: #FFF3CF; }
+.sky-cap { margin: 0; text-align: center; font-size: 0.82rem; color: var(--hero-dim); }
+.sky-cap:empty { display: none; }
+@media (prefers-reduced-transparency: reduce) {
+  .card, .datebar button.step, .datepick, #todayBtn, .seg, .place-sel, .gps-btn, .fb-form input, .fb-form textarea { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .card, .datebar button.step, .datepick, .seg, .place-sel { background: var(--surface); }
+}
 </style>
 
 <main class="app">
@@ -235,7 +321,8 @@ button:focus-visible, .datepick:focus-within { outline: 2px solid var(--accent);
     <button id="todayBtn" type="button" hidden>आज</button>
   </nav>
 
-  <section class="hero" aria-labelledby="tithiName">
+  <section class="hero" id="hero" aria-labelledby="tithiName">
+    <svg class="phase" viewBox="-12 -12 24 24" id="phaseSvg" role="img" aria-label="चंद्रमा की कला"><circle class="moon-glow" r="11.5"></circle><circle class="moon-dark" r="9"></circle><g id="phaseG"><path class="moon-lit" id="phaseLit" d=""></path></g></svg>
     <div class="hero-meta"><span id="pakshaTxt"></span> · <span id="varaTxt"></span></div>
     <h1 class="tithi" id="tithiName"></h1>
     <p class="tithi-until" id="tithiUntil"></p>
@@ -245,13 +332,24 @@ button:focus-visible, .datepick:focus-within { outline: 2px solid var(--accent);
       <b id="nakName"></b>
       <span class="dim" id="nakUntil"></span>
     </div>
-    <svg class="arcsvg" viewBox="0 0 320 92" role="img" aria-label="दिन में सूर्य की स्थिति">
+    <svg class="arcsvg" id="arcSvg" viewBox="0 0 320 92" role="img" aria-label="दिन में सूर्य की स्थिति">
+      <g id="stars" opacity="0">
+        <circle class="star" cx="52" cy="30" r="1.1"></circle><circle class="star" cx="90" cy="14" r="0.8"></circle>
+        <circle class="star" cx="128" cy="38" r="1"></circle><circle class="star" cx="196" cy="12" r="1.2"></circle>
+        <circle class="star" cx="236" cy="34" r="0.8"></circle><circle class="star" cx="272" cy="18" r="1.1"></circle>
+        <circle class="star" cx="160" cy="58" r="0.7"></circle><circle class="star" cx="30" cy="58" r="0.8"></circle>
+      </g>
       <path class="arc-fill" d="M16 76 Q160 -20 304 76 Z"></path>
       <path class="arc-line" d="M16 76 Q160 -20 304 76"></path>
       <line class="horizon" x1="6" y1="76" x2="314" y2="76"></line>
       <circle class="sun-glow" id="sunGlow" r="13" cx="16" cy="76" opacity="0"></circle>
       <circle class="sun" id="sunDot" r="6.5" cx="16" cy="76" opacity="0"></circle>
+      <g id="moonG" opacity="0" transform="translate(16 76)">
+        <circle class="moon-glow" r="15"></circle><circle class="moon-dark" r="8"></circle>
+        <g id="moonLitG"><path class="moon-lit" id="moonLit" d=""></path></g>
+      </g>
     </svg>
+    <p class="sky-cap" id="skyCap"></p>
     <div class="sunrow">
       <div><span class="lbl">सूर्योदय</span><b id="riseTxt"></b></div>
       <div class="mid"><span class="lbl">दिनमान</span><b id="dinmanTxt"></b></div>
@@ -851,16 +949,40 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
     $('setTxt').innerHTML = timeHtml(D.set);
     $('dinmanTxt').textContent = durText(D.dayLen);
 
-    /* sun position along the arc (quadratic curve through three points) */
-    var dot = $('sunDot'), glow = $('sunGlow');
-    if (isToday && now >= D.rise && now <= D.set) {
-      var t = (now - D.rise) / D.dayLen, u = 1 - t;
-      var x = u * u * 16 + 2 * u * t * 160 + t * t * 304;
-      var y = u * u * 76 + 2 * u * t * -20 + t * t * 76;
-      dot.setAttribute('cx', x.toFixed(1)); dot.setAttribute('cy', y.toFixed(1)); dot.setAttribute('opacity', '1');
-      glow.setAttribute('cx', x.toFixed(1)); glow.setAttribute('cy', y.toFixed(1)); glow.setAttribute('opacity', '1');
-    } else {
+    /* sun by day, moon by night along the same arc (quadratic curve through three points) */
+    var dot = $('sunDot'), glow = $('sunGlow'), moonG = $('moonG'), stars = $('stars'), hero = $('hero'), cap = $('skyCap');
+    function arcXY(t) { var u = 1 - t; return [u * u * 16 + 2 * u * t * 160 + t * t * 304, u * u * 76 + 2 * u * t * -20 + t * t * 76]; }
+    function moonPath(el, r) {
+      var c = Math.cos(el * D2R), rx = Math.abs(r * c);
+      return 'M0 ' + (-r) + ' A ' + r + ' ' + r + ' 0 0 1 0 ' + r + ' A ' + rx.toFixed(2) + ' ' + r + ' 0 0 ' + (c > 0 ? 0 : 1) + ' 0 ' + (-r) + ' Z';
+    }
+    var elv = elong(jdFromMs(isToday ? now : D.rise));
+    var flip = elv >= 180 ? 'scale(-1 1)' : 'scale(1 1)', illum = Math.round((1 - Math.cos(elv * D2R)) / 2 * 100);
+    $('phaseLit').setAttribute('d', moonPath(elv, 9)); $('phaseG').setAttribute('transform', flip);
+    $('moonLit').setAttribute('d', moonPath(elv, 8)); $('moonLitG').setAttribute('transform', flip);
+
+    var night = false, nt = 0, ns, ne, nrise;
+    if (isToday) {
+      if (now > D.set) { ns = D.set; ne = sunriseSet(sel.y, sel.m, sel.d + 1).rise; if (now < ne) { night = true; nt = (now - ns) / (ne - ns); } }
+      else if (now < D.rise) { ns = sunriseSet(sel.y, sel.m, sel.d - 1).set; ne = D.rise; night = true; nt = (now - ns) / (ne - ns); }
+    }
+    hero.className = 'hero' + (night ? ' night' : '');
+    stars.setAttribute('opacity', night ? '0.9' : '0');
+    $('arcSvg').setAttribute('aria-label', night ? 'रात में चंद्रमा की स्थिति' : 'दिन में सूर्य की स्थिति');
+    if (night) {
+      var mp = arcXY(Math.max(0, Math.min(1, nt)));
+      moonG.setAttribute('transform', 'translate(' + mp[0].toFixed(1) + ' ' + mp[1].toFixed(1) + ')'); moonG.setAttribute('opacity', '1');
       dot.setAttribute('opacity', '0'); glow.setAttribute('opacity', '0');
+      cap.textContent = 'रात · चंद्रमा ' + illum + '% प्रकाशित';
+    } else if (isToday && now >= D.rise && now <= D.set) {
+      var sp = arcXY((now - D.rise) / D.dayLen);
+      dot.setAttribute('cx', sp[0].toFixed(1)); dot.setAttribute('cy', sp[1].toFixed(1)); dot.setAttribute('opacity', '1');
+      glow.setAttribute('cx', sp[0].toFixed(1)); glow.setAttribute('cy', sp[1].toFixed(1)); glow.setAttribute('opacity', '1');
+      moonG.setAttribute('opacity', '0');
+      cap.textContent = 'दिन · सूर्य की स्थिति';
+    } else {
+      dot.setAttribute('opacity', '0'); glow.setAttribute('opacity', '0'); moonG.setAttribute('opacity', '0');
+      cap.textContent = 'चंद्रमा ' + illum + '% प्रकाशित';
     }
 
     /* muhurta */
@@ -1037,24 +1159,55 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
     document.title = short + ' जैन पंचांग';
   }
   function save(v) { try { localStorage.setItem('panchangCity', v); } catch (e) {} }
-  function setGpsOption(sel, lat, lon) {
+  function setGpsOption(sel, name) {
     var o = sel.querySelector('option[value="gps"]');
     if (!o) { o = document.createElement('option'); o.value = 'gps'; sel.insertBefore(o, sel.firstChild); }
-    o.textContent = 'मेरी लोकेशन (' + lat.toFixed(2) + ', ' + lon.toFixed(2) + ')';
+    o.textContent = '\uD83D\uDCCD ' + name;
     sel.value = 'gps';
   }
+  function kmBetween(a1, o1, a2, o2) {
+    var dLa = (a2 - a1) * D2R, dLo = (o2 - o1) * D2R;
+    var h = Math.sin(dLa / 2) * Math.sin(dLa / 2) + Math.cos(a1 * D2R) * Math.cos(a2 * D2R) * Math.sin(dLo / 2) * Math.sin(dLo / 2);
+    return 6371 * 2 * Math.asin(Math.sqrt(h));
+  }
+  function nearestCity(lat, lon) {
+    var best = 0, bd = 1e9, i, d;
+    for (i = 0; i < CITIES.length; i++) { d = kmBetween(lat, lon, CITIES[i][1], CITIES[i][2]); if (d < bd) { bd = d; best = i; } }
+    var nm = CITIES[best][0].split(',')[0];
+    return bd < 8 ? nm : nm + ' के पास (~' + Math.round(bd) + ' कि.मी.)';
+  }
+  /* Nearest village / town / city name from OpenStreetMap (Nominatim); falls back to the closest city in our list. */
+  function placeName(lat, lon, cb) {
+    var finished = false, ctl = window.AbortController ? new AbortController() : null;
+    function fallback() { if (finished) return; finished = true; cb({ short: nearestCity(lat, lon), full: nearestCity(lat, lon), osm: false }); }
+    var tm = setTimeout(function () { if (ctl) ctl.abort(); fallback(); }, 9000);
+    try {
+      fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=14&addressdetails=1&accept-language=hi,en&lat=' + lat + '&lon=' + lon, ctl ? { signal: ctl.signal } : {})
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          clearTimeout(tm); if (finished) return;
+          var a = (j && j.address) || {};
+          var p = a.village || a.hamlet || a.suburb || a.neighbourhood || a.town || a.city || a.city_district || a.municipality || a.county;
+          if (!p) { fallback(); return; }
+          var d = a.state_district || a.county || a.city || '', st = a.state || '';
+          var sh = p + (d && d !== p ? ', ' + d : ''), fu = sh + (st && st !== d && st !== p ? ', ' + st : '');
+          finished = true; cb({ short: sh, full: fu, osm: true });
+        })
+        .catch(function () { clearTimeout(tm); fallback(); });
+    } catch (e) { clearTimeout(tm); fallback(); }
+  }
   (function initCity() {
-    var sel = $('citySel'), btn = $('gpsBtn'), msg = $('gpsMsg'), h = '', i, saved = '0';
+    var sel = $('citySel'), btn = $('gpsBtn'), msg = $('gpsMsg'), h = '', i, saved = '0', g = null;
     if (!sel) return;
     for (i = 0; i < CITIES.length; i++) h += '<option value="' + i + '">' + CITIES[i][0] + '</option>';
     sel.innerHTML = h;
-    try { saved = localStorage.getItem('panchangCity') || '0'; } catch (e) {}
-    var g = null;
-    if (saved.indexOf('gps:') === 0) {
-      var p = saved.split(':'); g = [parseFloat(p[1]), parseFloat(p[2])];
-      if (isNaN(g[0]) || isNaN(g[1])) g = null;
-    }
-    if (g) { setGpsOption(sel, g[0], g[1]); setCoords('मेरी लोकेशन', g[0], g[1]); }
+    try {
+      saved = localStorage.getItem('panchangCity') || '0';
+      if (saved.indexOf('gps:') === 0) { var p = saved.split(':'); g = { lat: parseFloat(p[1]), lon: parseFloat(p[2]), name: 'मेरी लोकेशन' }; }
+      else if (saved === 'gps') g = JSON.parse(localStorage.getItem('panchangGps') || 'null');
+    } catch (e) { g = null; }
+    if (g && !(isFinite(g.lat) && isFinite(g.lon))) g = null;
+    if (g) { setGpsOption(sel, g.name || 'मेरी लोकेशन'); setCoords(g.name || 'मेरी लोकेशन', g.lat, g.lon); }
     else {
       var n = parseInt(saved, 10); if (!(n >= 0 && n < CITIES.length)) n = 0;
       sel.value = String(n); setCoords(CITIES[n][0], CITIES[n][1], CITIES[n][2]);
@@ -1068,12 +1221,18 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
       if (!navigator.geolocation) { msg.textContent = 'यह ब्राउज़र लोकेशन सुविधा नहीं देता। कृपया सूची से शहर चुनें।'; return; }
       btn.disabled = true; msg.textContent = 'आपकी लोकेशन खोज रहे हैं…';
       navigator.geolocation.getCurrentPosition(function (pos) {
-        btn.disabled = false;
         var la = pos.coords.latitude, lo = pos.coords.longitude;
-        if (la < 6 || la > 37.5 || lo < 68 || lo > 98) { msg.textContent = 'यह लोकेशन भारत के बाहर लगती है। पंचांग भारतीय समय (IST) पर आधारित है, इसलिए सूची से शहर चुनें।'; return; }
+        if (la < 6 || la > 37.5 || lo < 68 || lo > 98) { btn.disabled = false; msg.textContent = 'यह लोकेशन भारत के बाहर लगती है। पंचांग भारतीय समय (IST) पर आधारित है, इसलिए सूची से शहर चुनें।'; return; }
         la = Math.round(la * 10000) / 10000; lo = Math.round(lo * 10000) / 10000;
-        setGpsOption(sel, la, lo); setCoords('मेरी लोकेशन', la, lo); save('gps:' + la + ':' + lo);
-        msg.textContent = 'आपकी लोकेशन के हिसाब से पंचांग दिख रहा है।'; safeRender();
+        setGpsOption(sel, 'मेरी लोकेशन'); setCoords('मेरी लोकेशन', la, lo); safeRender();
+        msg.textContent = 'आपके नज़दीकी गाँव/शहर का नाम खोज रहे हैं…';
+        placeName(la, lo, function (r) {
+          btn.disabled = false;
+          setGpsOption(sel, r.short); setCoords(r.short, la, lo);
+          save('gps'); try { localStorage.setItem('panchangGps', JSON.stringify({ lat: la, lon: lo, name: r.short })); } catch (e) {}
+          msg.textContent = 'आपकी लोकेशन: ' + r.full + (r.osm ? ' · नाम स्रोत: OpenStreetMap' : '');
+          safeRender();
+        });
       }, function (err) {
         btn.disabled = false;
         msg.textContent = err && err.code === 1 ? 'लोकेशन की अनुमति नहीं मिली। ब्राउज़र की सेटिंग में अनुमति दें या सूची से शहर चुनें।' : 'लोकेशन नहीं मिल पाई। सूची से शहर चुनें।';
