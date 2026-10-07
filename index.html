@@ -297,6 +297,20 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
   .card, .datebar button.step, .datepick, #todayBtn, .seg, .place-sel, .gps-btn, .fb-form input, .fb-form textarea { -webkit-backdrop-filter: none; backdrop-filter: none; }
   .card, .datebar button.step, .datepick, .seg, .place-sel { background: var(--surface); }
 }
+
+/* ===== readability fix ===== */
+:root { --muted: #4A3B3D; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --muted: #CBBDBE; } }
+:root[data-theme="dark"] { --muted: #CBBDBE; }
+.card { background: rgba(255,255,255,0.86); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .card { background: rgba(36,26,28,0.88); } }
+:root[data-theme="dark"] .card { background: rgba(36,26,28,0.88); }
+.ds { color: var(--muted); font-size: 0.88rem; }
+.per { opacity: 1; }
+.rows li.past { opacity: 0.78; }
+.card h2, .nm, .tm, .val { color: var(--ink); }
+.cal-grid .cd .dots i.n { background: #2D6CC0; }
+.cal-legend i.n { background: #2D6CC0; }
 </style>
 
 <main class="app">
@@ -351,9 +365,9 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
     </svg>
     <p class="sky-cap" id="skyCap"></p>
     <div class="sunrow">
-      <div><span class="lbl">सूर्योदय</span><b id="riseTxt"></b></div>
-      <div class="mid"><span class="lbl">दिनमान</span><b id="dinmanTxt"></b></div>
-      <div class="r"><span class="lbl">सूर्यास्त</span><b id="setTxt"></b></div>
+      <div><span class="lbl" id="lblL">सूर्योदय</span><b id="riseTxt"></b></div>
+      <div class="mid"><span class="lbl" id="lblM">दिनमान</span><b id="dinmanTxt"></b></div>
+      <div class="r"><span class="lbl" id="lblR">सूर्यास्त</span><b id="setTxt"></b></div>
     </div>
   </section>
 
@@ -366,11 +380,11 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
       <button type="button" id="calNext" aria-label="अगला महीना">›</button>
     </div>
     <div class="cal-grid" id="calGrid"></div>
-    <div class="cal-legend"><span><i></i>जैन पर्व / कल्याणक</span><span><i class="p"></i>पक्खी</span></div>
+    <div class="cal-legend"><span><i></i>जैन पर्व / कल्याणक</span><span><i class="p"></i>पक्खी</span><span><i class="n"></i>राष्ट्रीय पर्व / अवकाश</span></div>
   </section>
 
   <section class="card" aria-labelledby="parvTitle">
-    <h2 id="parvTitle">जैन पर्व और कल्याणक</h2>
+    <h2 id="parvTitle">जैन पर्व, कल्याणक और राष्ट्रीय पर्व</h2>
     <p class="sub" id="parvSub"></p>
     <ul class="rows" id="parvList"></ul>
   </section>
@@ -437,10 +451,9 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
   <section class="card fb" aria-labelledby="fbTitle">
     <h2 id="fbTitle">सुधार / फीडबैक</h2>
     <p class="sub">तिथि, समय या त्यौहार की जानकारी में कोई गलती दिखे तो कृपया बताएँ।</p>
-    <p class="who"><b>सुरेन्द्र कुमार चोरड़िया</b><br>चन्द्रशेखर आज़ाद नगर, भीलवाड़ा<br>WhatsApp: <a href="https://wa.me/919799668800" style="color:var(--accent)">+91 97996 68800</a><br>ईमेल: <a href="mailto:skchordia75@gmail.com" style="color:var(--accent)">skchordia75@gmail.com</a></p>
+    <p class="who"><b>सुरेन्द्र कुमार चोरड़िया</b><br>चन्द्रशेखर आज़ाद नगर, भीलवाड़ा</p>
     <div class="fb-btns">
       <a class="wa" href="https://wa.me/919799668800?text=%E0%A4%9C%E0%A5%88%E0%A4%A8%20%E0%A4%AA%E0%A4%82%E0%A4%9A%E0%A4%BE%E0%A4%82%E0%A4%97%20%E0%A4%AB%E0%A5%80%E0%A4%A1%E0%A4%AC%E0%A5%88%E0%A4%95" target="_blank" rel="noopener">WhatsApp करें</a>
-      <a class="ml" href="mailto:skchordia75@gmail.com?subject=%E0%A4%9C%E0%A5%88%E0%A4%A8%20%E0%A4%AA%E0%A4%82%E0%A4%9A%E0%A4%BE%E0%A4%82%E0%A4%97%20%E0%A4%AB%E0%A5%80%E0%A4%A1%E0%A4%AC%E0%A5%88%E0%A4%95">ईमेल करें</a>
     </div>
     <div class="fb-form">
       <input id="fbName" type="text" placeholder="आपका नाम (वैकल्पिक)" autocomplete="name">
@@ -878,6 +891,15 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
     11: [[6, "अरिष्टनेमि जिन च्यवन · पद्मप्रभ जिन जन्म"], [7, "पद्मप्रभ जिन दीक्षा"], [8, "महावीर जिन मोक्ष"], [10, "वीर निर्वाण संवत् 2553 प्रारम्भ"], [12, "सुविधि जिन केवल"], [14, "ज्ञान पंचमी"], [17, "स्वामी चाँद गुरु स्मृति दिवस"], [18, "स्वामी हरक गुरु जन्म दिवस"], [21, "अरह जिन केवल"], [24, "चातुर्मास समाप्त · वीर लोकाशाह जयंती"], [26, "एकभवावतारी आचार्य श्री जयमल जी म.सा. की 295वीं दीक्षा जयंती"], [28, "सुविधि जिन जन्म"], [29, "सुविधि जिन दीक्षा"]],
     12: [[3, "महावीर जिन दीक्षा"], [4, "पद्मप्रभ जिन मोक्ष"], [19, "अरह जिन जन्म · अरह जिन मोक्ष"], [20, "अरह जिन दीक्षा · मल्ली जिन जन्म · मल्ली जिन दीक्षा · मल्ली जिन केवल · नमि जिन केवल · मौन ग्यारस"], [23, "सम्भव जिन जन्म · सम्भव जिन दीक्षा"]],
   };
+  /* राष्ट्रीय पर्व और अवकाश (हर साल एक ही तारीख़) */
+  var NAT = {
+    1: [[26, 'गणतंत्र दिवस (राष्ट्रीय अवकाश)']],
+    4: [[14, 'डॉ. अम्बेडकर जयंती (राजपत्रित अवकाश)']],
+    8: [[15, 'स्वतंत्रता दिवस (राष्ट्रीय अवकाश)']],
+    10: [[2, 'गांधी जयंती (राष्ट्रीय अवकाश)']],
+    12: [[25, 'क्रिसमस (राजपत्रित अवकाश)']]
+  };
+  function natFor(m, d) { var a = NAT[m] || [], i; for (i = 0; i < a.length; i++) if (a[i][0] === d) return a[i][1]; return ''; }
   function kalFor(y, m, d) {
     var a = y === 2026 ? KAL[m] : null, i;
     if (a) for (i = 0; i < a.length; i++) if (a[i][0] === d) return a[i][1];
@@ -902,7 +924,7 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
       cls = 'cd' + ((first + d - 1) % 7 === 0 ? ' s' : '') +
             (curSel && curSel.y === v.y && curSel.m === v.m && curSel.d === d ? ' sel' : '') +
             (today.y === v.y && today.m === v.m && today.d === d ? ' today' : '');
-      dots = (kalFor(v.y, v.m, d) ? '<i></i>' : '') + (PKMAP[k] ? '<i class="p"></i>' : '');
+      dots = (kalFor(v.y, v.m, d) ? '<i></i>' : '') + (natFor(v.m, d) ? '<i class="n"></i>' : '') + (PKMAP[k] ? '<i class="p"></i>' : '');
       h += '<button type="button" class="' + cls + '" data-d="' + d + '"><span class="dots">' + dots + '</span><span class="g">' + d + '</span><span class="t">' + lab + '</span></button>';
     }
     $('calGrid').innerHTML = h;
@@ -913,6 +935,10 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
       ? MONTHS[v.m - 1] + ' 2026 · पद्मोदय जैन कैलेंडर के अनुसार (तिथि के अनुसार)'
       : 'यह सूची पद्मोदय जैन कैलेंडर 2026 की तारीख़ों पर आधारित है, इसलिए सिर्फ़ 2026 के लिए है।';
     a.forEach(function (r) {
+      var isSel = curSel && curSel.y === v.y && curSel.m === v.m && curSel.d === r[0];
+      h += row({ name: r[0] + ' ' + SMON[v.m - 1] + ', ' + dayOf({ y: v.y, m: v.m, d: r[0] }), desc: r[1], right: '', cls: isSel ? 'now' : '' });
+    });
+    (NAT[v.m] || []).forEach(function (r) {
       var isSel = curSel && curSel.y === v.y && curSel.m === v.m && curSel.d === r[0];
       h += row({ name: r[0] + ' ' + SMON[v.m - 1] + ', ' + dayOf({ y: v.y, m: v.m, d: r[0] }), desc: r[1], right: '', cls: isSel ? 'now' : '' });
     });
@@ -967,6 +993,13 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
       else if (now < D.rise) { ns = sunriseSet(sel.y, sel.m, sel.d - 1).set; ne = D.rise; night = true; nt = (now - ns) / (ne - ns); }
     }
     hero.className = 'hero' + (night ? ' night' : '');
+    if (night) {
+      $('lblL').textContent = 'सूर्यास्त'; $('riseTxt').innerHTML = timeHtml(ns);
+      $('lblM').textContent = 'रात्रिमान'; $('dinmanTxt').textContent = durText(ne - ns);
+      $('lblR').textContent = 'अगला सूर्योदय'; $('setTxt').innerHTML = timeHtml(ne);
+    } else {
+      $('lblL').textContent = 'सूर्योदय'; $('lblM').textContent = 'दिनमान'; $('lblR').textContent = 'सूर्यास्त';
+    }
     stars.setAttribute('opacity', night ? '0.9' : '0');
     $('arcSvg').setAttribute('aria-label', night ? 'रात में चंद्रमा की स्थिति' : 'दिन में सूर्य की स्थिति');
     if (night) {
@@ -1032,6 +1065,8 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
       desc: D.jain.adhik ? 'अधिक मास' : (D.jain.vad ? 'गुजराती (अमान्त) गणना: ' + D.jain.aman : '') });
     var kp = kalFor(sel.y, sel.m, sel.d);
     if (kp) rows.unshift({ name: 'जैन पर्व / कल्याणक', right: '', desc: kp });
+    var np = natFor(sel.m, sel.d);
+    if (np) rows.unshift({ name: 'राष्ट्रीय पर्व / अवकाश', right: '', desc: np });
     rows.push({ name: 'विक्रम संवत् (जैन)', right: String(D.years.jainVS), rc: 'val', desc: 'कार्तिक सुद १ से बदलता है' });
     rows.push({ name: 'विक्रम संवत् (हिंदू)', right: String(D.years.hinduVS), rc: 'val', desc: 'चैत्र सुद १ से बदलता है' });
     rows.push({ name: 'शक संवत्', right: String(D.years.shaka), rc: 'val' });
