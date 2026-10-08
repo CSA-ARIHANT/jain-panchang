@@ -311,6 +311,10 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
 .card h2, .nm, .tm, .val { color: var(--ink); }
 .cal-grid .cd .dots i.n { background: #2D6CC0; }
 .cal-legend i.n { background: #2D6CC0; }
+.fb-form .fb-mail { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+.rv-stars { display: flex; gap: 2px; }
+.rv-stars button { background: none; border: 0; font-size: 32px; line-height: 1; min-width: 44px; min-height: 44px; color: var(--muted); cursor: pointer; opacity: .55; }
+.rv-stars button.on { color: #E8A317; opacity: 1; }
 </style>
 
 <main class="app">
@@ -320,6 +324,7 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
   </header>
   <p class="gps-msg" id="gpsMsg" role="status"></p>
   <div id="diag" style="font-size:13px;color:#8a2a1f;padding:0 2px 8px;word-break:break-word">यह व्यूअर स्क्रिप्ट नहीं चला रहा, इसलिए तारीख़ और पंचांग नहीं दिख रहे। इस फ़ाइल को Safari/Chrome जैसे ब्राउज़र में खोलें, या Claude ऐप में आर्टिफ़ैक्ट से देखें।</div>
+  <div class="card" id="visitorBox" style="text-align:center;margin:14px auto;max-width:520px;padding:12px"><b>👥 कुल विज़िटर: <span id="vcTotal">—</span></b> &nbsp;|&nbsp; <b>🟢 अभी ऑनलाइन: <span id="vcOnline">—</span></b></div>
   <script>
     window.onerror = function (m, u, l, c) { var d = document.getElementById('diag'); if (d) d.textContent = 'JS त्रुटि: ' + m + ' (' + l + ':' + c + ')'; };
   </script>
@@ -380,13 +385,43 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
       <button type="button" id="calNext" aria-label="अगला महीना">›</button>
     </div>
     <div class="cal-grid" id="calGrid"></div>
-    <div class="cal-legend"><span><i></i>जैन पर्व / कल्याणक</span><span><i class="p"></i>पक्खी</span><span><i class="n"></i>राष्ट्रीय पर्व / अवकाश</span></div>
+    <div class="cal-legend"><span><i></i>जैन पर्व / कल्याणक</span><span><i class="p"></i>पक्खी</span><span><i class="n"></i>अवकाश</span></div>
   </section>
 
   <section class="card" aria-labelledby="parvTitle">
-    <h2 id="parvTitle">जैन पर्व, कल्याणक और राष्ट्रीय पर्व</h2>
+    <div class="head">
+      <h2 id="parvTitle">जैन पर्व और कल्याणक</h2>
+      <div class="seg" role="tablist" aria-label="जैन पर्व की सूची">
+        <button type="button" role="tab" id="jUp" aria-selected="true">आगामी</button>
+        <button type="button" role="tab" id="jAll" aria-selected="false">सभी</button>
+      </div>
+    </div>
     <p class="sub" id="parvSub"></p>
     <ul class="rows" id="parvList"></ul>
+  </section>
+
+  <section class="card" aria-labelledby="aryaTitle">
+    <div class="head">
+      <h2 id="aryaTitle">राष्ट्रीय एवं आर्य त्यौहार</h2>
+      <div class="seg" role="tablist" aria-label="त्यौहार की सूची">
+        <button type="button" role="tab" id="aUp" aria-selected="true">आगामी</button>
+        <button type="button" role="tab" id="aAll" aria-selected="false">सभी</button>
+      </div>
+    </div>
+    <p class="sub" id="arySub"></p>
+    <ul class="rows" id="aryaList"></ul>
+  </section>
+
+  <section class="card" aria-labelledby="avkTitle">
+    <div class="head">
+      <h2 id="avkTitle">अवकाश</h2>
+      <div class="seg" role="tablist" aria-label="अवकाश की सूची">
+        <button type="button" role="tab" id="vUp" aria-selected="true">आगामी</button>
+        <button type="button" role="tab" id="vAll" aria-selected="false">सभी</button>
+      </div>
+    </div>
+    <p class="sub" id="avkSub"></p>
+    <ul class="rows" id="avkList"></ul>
   </section>
 
   <section class="card" aria-labelledby="muhTitle">
@@ -448,17 +483,31 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
     <div id="festBody"></div>
   </section>
 
+  <section class="card rv" id="rvBox" style="display:none" aria-labelledby="rvTitle">
+    <h2 id="rvTitle">समीक्षा और रेटिंग</h2>
+    <p class="sub" id="rvSum">—</p>
+    <ul class="rows" id="rvList"></ul>
+    <div class="fb-form">
+      <div id="rvStars" class="rv-stars" role="radiogroup" aria-label="रेटिंग चुनें">
+        <button type="button" role="radio" aria-checked="false" data-v="1" aria-label="1 तारा">★</button><button type="button" role="radio" aria-checked="false" data-v="2" aria-label="2 तारे">★</button><button type="button" role="radio" aria-checked="false" data-v="3" aria-label="3 तारे">★</button><button type="button" role="radio" aria-checked="false" data-v="4" aria-label="4 तारे">★</button><button type="button" role="radio" aria-checked="false" data-v="5" aria-label="5 तारे">★</button>
+      </div>
+      <input id="rvName" type="text" maxlength="40" placeholder="आपका नाम (वैकल्पिक)" autocomplete="name">
+      <textarea id="rvMsg" maxlength="500" placeholder="आपकी समीक्षा या सुझाव"></textarea>
+      <input id="rvHp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;height:0;width:0;opacity:0">
+      <button type="button" class="fb-send" id="rvSend">समीक्षा भेजें</button>
+      <p class="sub" id="rvOut" role="status">आपकी समीक्षा मेरे सत्यापन के बाद ही सबको दिखेगी।</p>
+    </div>
+  </section>
+
   <section class="card fb" aria-labelledby="fbTitle">
     <h2 id="fbTitle">सुधार / फीडबैक</h2>
     <p class="sub">तिथि, समय या त्यौहार की जानकारी में कोई गलती दिखे तो कृपया बताएँ।</p>
     <p class="who"><b>सुरेन्द्र कुमार चोरड़िया</b><br>चन्द्रशेखर आज़ाद नगर, भीलवाड़ा</p>
-    <div class="fb-btns">
-      <a class="wa" href="https://wa.me/919799668800?text=%E0%A4%9C%E0%A5%88%E0%A4%A8%20%E0%A4%AA%E0%A4%82%E0%A4%9A%E0%A4%BE%E0%A4%82%E0%A4%97%20%E0%A4%AB%E0%A5%80%E0%A4%A1%E0%A4%AC%E0%A5%88%E0%A4%95" target="_blank" rel="noopener">WhatsApp करें</a>
-    </div>
     <div class="fb-form">
       <input id="fbName" type="text" placeholder="आपका नाम (वैकल्पिक)" autocomplete="name">
       <textarea id="fbMsg" placeholder="सुझाव या सुधार यहाँ लिखें (तारीख़ के साथ)"></textarea>
       <button type="button" class="fb-send" id="fbSend">WhatsApp पर भेजें</button>
+      <button type="button" class="fb-send fb-mail" id="fbMail">ईमेल से भेजें</button>
     </div>
   </section>
 
@@ -466,11 +515,15 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
 </main>
 
 <script>
-(function(){var b=document.getElementById('fbSend');if(!b)return;
-b.addEventListener('click',function(){var n=document.getElementById('fbName').value.trim(),m=document.getElementById('fbMsg').value.trim();
-if(!m){document.getElementById('fbMsg').focus();return;}
-var cs=document.getElementById('citySel'),cn=cs&&cs.options[cs.selectedIndex]?cs.options[cs.selectedIndex].text:'भीलवाड़ा';var t='जैन पंचांग ('+cn+') फीडबैक'+(n?'\nनाम: '+n:'')+'\n\n'+m;
-window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');});})();
+(function(){
+var b=document.getElementById('fbSend'),mb=document.getElementById('fbMail');if(!b)return;
+function bld(){var n=document.getElementById('fbName').value.trim(),m=document.getElementById('fbMsg').value.trim();
+if(!m){document.getElementById('fbMsg').focus();return null;}
+var cs=document.getElementById('citySel'),cn=cs&&cs.options[cs.selectedIndex]?cs.options[cs.selectedIndex].text:'भीलवाड़ा';
+return 'जैन पंचांग ('+cn+') फीडबैक'+(n?'\nनाम: '+n:'')+'\n\n'+m;}
+b.addEventListener('click',function(){var t=bld();if(!t)return;window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');});
+if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.location.href='mailto:skchordia75@gmail.com?subject='+encodeURIComponent('जैन पंचांग फीडबैक')+'&body='+encodeURIComponent(t);});
+})();
 </script>
 <script>
 (function () {
@@ -709,7 +762,7 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
 
     var base = (m <= 4 && lm.mon >= 7) ? y - 1 : y;
     var hinduVS = base + 57;
-    var years = { hinduVS: hinduVS, jainVS: lm.mon <= 6 ? hinduVS - 1 : hinduVS, shaka: base - 78, kali: base + 3101 };
+    var years = { hinduVS: hinduVS, jainVS: lm.mon <= 6 ? hinduVS - 1 : hinduVS, veer: (lm.mon <= 6 ? hinduVS - 1 : hinduVS) + 470, shaka: base - 78, kali: base + 3101 };
 
     function part(name, k, desc) {
       var u = len / 8;
@@ -891,16 +944,40 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
     11: [[6, "अरिष्टनेमि जिन च्यवन · पद्मप्रभ जिन जन्म"], [7, "पद्मप्रभ जिन दीक्षा"], [8, "महावीर जिन मोक्ष"], [10, "वीर निर्वाण संवत् 2553 प्रारम्भ"], [12, "सुविधि जिन केवल"], [14, "ज्ञान पंचमी"], [17, "स्वामी चाँद गुरु स्मृति दिवस"], [18, "स्वामी हरक गुरु जन्म दिवस"], [21, "अरह जिन केवल"], [24, "चातुर्मास समाप्त · वीर लोकाशाह जयंती"], [26, "एकभवावतारी आचार्य श्री जयमल जी म.सा. की 295वीं दीक्षा जयंती"], [28, "सुविधि जिन जन्म"], [29, "सुविधि जिन दीक्षा"]],
     12: [[3, "महावीर जिन दीक्षा"], [4, "पद्मप्रभ जिन मोक्ष"], [19, "अरह जिन जन्म · अरह जिन मोक्ष"], [20, "अरह जिन दीक्षा · मल्ली जिन जन्म · मल्ली जिन दीक्षा · मल्ली जिन केवल · नमि जिन केवल · मौन ग्यारस"], [23, "सम्भव जिन जन्म · सम्भव जिन दीक्षा"]],
   };
-  /* राष्ट्रीय पर्व और अवकाश (हर साल एक ही तारीख़) */
-  var NAT = {
-    1: [[26, 'गणतंत्र दिवस (राष्ट्रीय अवकाश)']],
-    4: [[14, 'डॉ. अम्बेडकर जयंती (राजपत्रित अवकाश)']],
-    8: [[15, 'स्वतंत्रता दिवस (राष्ट्रीय अवकाश)']],
-    10: [[2, 'गांधी जयंती (राष्ट्रीय अवकाश)']],
-    12: [[25, 'क्रिसमस (राजपत्रित अवकाश)']]
+  /* पद्मोदय जैन कैलेंडर 2026: राष्ट्रीय एवं आर्य त्यौहार और अवकाश */
+  var ARYA = {
+    1: [[1, 'नववर्ष प्रारम्भ, प्रदोष'], [3, 'माघ स्नानारम्भ'], [6, 'सौभाग्य सुन्दरी व्रत'], [12, 'स्वामी विवेकानन्द जयन्ती'], [13, 'लोहड़ी (पंजाब)'], [14, 'मकर संक्रान्ति, पोंगल, षट्तिला एकादशी व्रत'], [16, 'प्रदोष'], [18, 'मौनी अमावस्या'], [20, 'पंचक प्रारम्भ'], [23, 'नेताजी सुभाषचन्द्र बोस जयन्ती, बसन्त पंचमी'], [25, 'पंचक समाप्त'], [26, 'गणतंत्र दिवस'], [29, 'जया एकादशी व्रत'], [30, 'प्रदोष, गांधी पुण्य तिथि']],
+    2: [[1, 'माघ स्नान पूर्ति'], [11, 'रामदास नवमी'], [12, 'कुम्भ संक्रान्ति'], [13, 'विजया एकादशी व्रत'], [14, 'प्रदोष'], [15, 'महाशिवरात्रि व्रत'], [17, 'पंचक प्रारम्भ, वलयाकार सूर्यग्रहण (भारत में नहीं)'], [19, 'श्री रामकृष्ण परमहंस जयन्ती'], [21, 'पंचक समाप्त'], [22, 'याज्ञवल्क्य जयन्ती'], [24, 'होलाष्टक प्रारम्भ'], [27, 'आमलकी एकादशी व्रत'], [28, 'मेला श्याम जी (खाटू)']],
+    3: [[1, 'प्रदोष'], [2, 'होलिका दहन'], [3, 'छारेण्डी, खण्डग्रास चन्द्रग्रहण'], [10, 'शीतला सप्तमी'], [11, 'शीतला अष्टमी (जोधपुर)'], [14, 'मीन संक्रान्ति'], [15, 'पापमोचनी एकादशी व्रत'], [16, 'पंचक प्रारम्भ, प्रदोष'], [19, 'नवरात्रारम्भ (घटस्थापना), संवत्सरारम्भ'], [20, 'पंचक समाप्त'], [21, 'गणगौरी पूजा'], [25, 'दुर्गाष्टमी'], [26, 'रामनवमी'], [29, 'कामदा एकादशी व्रत'], [30, 'प्रदोष'], [31, 'भगवान महावीर जन्म जयन्ती']],
+    4: [[2, 'हनुमान जयन्ती, वैशाख स्नानारम्भ'], [6, 'अनुसूया जयन्ती'], [12, 'पंचक प्रारम्भ'], [13, 'वरुथिनी एकादशी व्रत'], [14, 'मेष संक्रान्ति, डॉ. अंबेडकर जयन्ती, बैसाखी'], [15, 'प्रदोष'], [17, 'पंचक समाप्त'], [19, 'शिवाजी जयन्ती, परशुराम जयन्ती'], [20, 'अक्षय तृतीया'], [21, 'आद्य शंकराचार्य जयन्ती'], [22, 'रामानुज जयन्ती'], [23, 'गंगोत्पत्ति'], [27, 'मोहिनी एकादशी व्रत'], [29, 'प्रदोष'], [30, 'नृसिंह चतुर्दशी']],
+    5: [[1, 'मजदूर दिवस, वैशाख स्नान पूर्ति, बुद्ध पूर्णिमा'], [3, 'नारद जयन्ती'], [7, 'टैगोर जयन्ती'], [10, 'पंचक प्रारम्भ'], [13, 'अपरा एकादशी व्रत'], [14, 'वृषभ संक्रान्ति, पंचक समाप्त, प्रदोष'], [16, 'शनैश्चर जयन्ती, वट पूजनम्, वट सावित्री व्रत'], [28, 'प्रदोष']],
+    6: [[6, 'पंचक प्रारम्भ'], [11, 'पंचक समाप्त'], [12, 'प्रदोष'], [15, 'मिथुन संक्रान्ति, सोमवती अमावस्या'], [17, 'प्रताप जयन्ती'], [21, 'सूर्य दक्षिणायन प्रारम्भ, अंतर्राष्ट्रीय योग दिवस'], [22, 'दुर्गाष्टमी, धूमावती जयन्ती'], [24, 'गंगा दशहरा व्रत'], [25, 'निर्जला एकादशी व्रत'], [27, 'प्रदोष'], [29, 'कबीर जयन्ती']],
+    7: [[3, 'पंचक प्रारम्भ'], [8, 'पंचक समाप्त'], [10, 'योगिनी एकादशी व्रत'], [12, 'प्रदोष'], [16, 'कर्क संक्रान्ति'], [25, 'देवशयनी एकादशी व्रत'], [26, 'प्रदोष'], [29, 'वायु परीक्षा, व्यास पूजा, गुरु पूर्णिमा'], [31, 'पंचक प्रारम्भ']],
+    8: [[4, 'पंचक समाप्त'], [9, 'कामिका एकादशी व्रत'], [10, 'प्रदोष'], [12, 'हरियाली अमावस्या, खग्रास सूर्यग्रहण (भारत में नहीं)'], [15, 'श्रावण की तीज, स्वतंत्रता दिवस'], [17, 'नाग पंचमी, सिंह संक्रान्ति'], [18, 'कल्कि जयन्ती'], [19, 'तुलसी जयन्ती'], [23, 'पवित्रा एकादशी व्रत'], [25, 'प्रदोष'], [27, 'पंचक प्रारम्भ'], [28, 'रक्षा बंधन, खण्डग्रास चन्द्रग्रहण (भारत में नहीं)'], [31, 'पंचक समाप्त']],
+    9: [[4, 'जन्माष्टमी'], [5, 'गोगा नवमी'], [7, 'अजा एकादशी व्रत'], [8, 'प्रदोष'], [13, 'वराह जयन्ती'], [14, 'गणेश चतुर्थी'], [15, 'ऋषि पंचमी'], [17, 'कन्या संक्रान्ति'], [19, 'दधीचि जयन्ती'], [21, 'रामदेव जी का मेला'], [22, 'जलझूलनी एकादशी व्रत'], [23, 'पंचक प्रारम्भ, वामन जयन्ती'], [24, 'प्रदोष'], [25, 'अनन्त चतुर्दशी'], [28, 'पंचक समाप्त, शहीद भगत सिंह जयन्ती']],
+    10: [[2, 'गांधी जयन्ती'], [6, 'इन्दिरा एकादशी व्रत'], [8, 'प्रदोष'], [10, 'सर्वपितृ श्राद्ध'], [11, 'नवरात्रारम्भ, घटस्थापना, अग्रसेन जयन्ती'], [17, 'सरस्वती आह्वान, तुला संक्रान्ति'], [18, 'सरस्वती पूजन'], [19, 'महाष्टमी, शस्त्रादि पूजा'], [20, 'विजया दशमी, सरस्वती विसर्जन'], [21, 'पंचक प्रारम्भ'], [22, 'पापांकुशा एकादशी व्रत'], [23, 'प्रदोष'], [25, 'शरद पूर्णिमा, पंचक समाप्त'], [26, 'कार्तिक स्नान प्रारम्भ'], [29, 'करवा चौथ']],
+    11: [[5, 'रमा एकादशी व्रत, गोवत्स द्वादशी'], [6, 'धनतेरस, धन्वन्तरी जयन्ती, प्रदोष'], [7, 'दीपदान, रूप चतुर्दशी, नरक चतुर्दशी'], [8, 'महालक्ष्मी पूजा, कुबेर पूजा, दीपावली, भगवान महावीर निर्वाण दिवस'], [9, 'गोवर्धन पूजा, सोमवती अमावस्या'], [10, 'नूतन वर्षारम्भ'], [11, 'भाई दूज'], [13, 'दूर्वा गणपति व्रत'], [14, 'नेहरू जयन्ती (बाल-दिवस)'], [16, 'वृश्चिक संक्रान्ति'], [17, 'पंचक प्रारम्भ, गोपाष्टमी'], [20, 'तुलसी विवाह, देवोत्थापन, प्रबोधिनी एकादशी व्रत'], [21, 'पंचक समाप्त'], [22, 'प्रदोष'], [24, 'पुष्कर यात्रा, कार्तिक स्नान पूर्ति, गुरु नानक जयन्ती'], [27, 'सौभाग्य सुन्दरी व्रत']],
+    12: [[1, 'काल भैरवाष्टमी'], [4, 'उत्पत्ति एकादशी व्रत'], [6, 'प्रदोष'], [14, 'पंचक प्रारम्भ'], [16, 'धनु संक्रान्ति'], [19, 'पंचक समाप्त'], [20, 'मोक्षदा एकादशी व्रत, गीता जयन्ती'], [21, 'प्रदोष, अनंग त्रयोदशी व्रत, सूर्य उत्तरायण प्रारम्भ'], [23, 'श्रीदत्त जयन्ती'], [25, 'बड़ा दिन (क्रिसमस डे)']]
   };
-  function natFor(m, d) { var a = NAT[m] || [], i; for (i = 0; i < a.length; i++) if (a[i][0] === d) return a[i][1]; return ''; }
-  function kalFor(y, m, d) {
+  var AVK = {
+    1: [[1, 'नववर्ष प्रारम्भ (ऐच्छिक)'], [10, 'द्वितीय शनिवार'], [13, 'लोहड़ी (पंजाब) (ऐच्छिक)'], [14, 'मकर संक्रान्ति, पोंगल'], [23, 'बसन्त पंचमी'], [24, 'चतुर्थ शनिवार'], [26, 'गणतंत्र दिवस']],
+    2: [[1, 'गुरु रविदास जयन्ती'], [14, 'द्वितीय शनिवार'], [15, 'महाशिवरात्रि व्रत'], [28, 'चतुर्थ शनिवार']],
+    3: [[2, 'होलिका दहन'], [3, 'छारेण्डी'], [14, 'द्वितीय शनिवार'], [20, 'रमजान (ईद), झूलेलाल जयन्ती'], [26, 'रामनवमी'], [28, 'चतुर्थ शनिवार'], [31, 'महावीर जयन्ती']],
+    4: [[2, 'हनुमान जयन्ती'], [3, 'गुड फ्राइडे'], [11, 'द्वितीय शनिवार'], [14, 'डॉ. अंबेडकर जयन्ती, बैसाखी'], [25, 'चतुर्थ शनिवार']],
+    5: [[1, 'मजदूर दिवस, बुद्ध पूर्णिमा'], [9, 'द्वितीय शनिवार'], [23, 'चतुर्थ शनिवार']],
+    6: [[13, 'द्वितीय शनिवार'], [26, 'मोहर्रम'], [27, 'चतुर्थ शनिवार']],
+    7: [[11, 'द्वितीय शनिवार'], [25, 'चतुर्थ शनिवार'], [29, 'गुरु पूर्णिमा']],
+    8: [[8, 'द्वितीय शनिवार'], [15, 'स्वतंत्रता दिवस'], [22, 'चतुर्थ शनिवार'], [28, 'रक्षा बंधन']],
+    9: [[4, 'जन्माष्टमी'], [12, 'द्वितीय शनिवार'], [14, 'गणेश चतुर्थी'], [26, 'चतुर्थ शनिवार']],
+    10: [[2, 'गांधी जयन्ती'], [10, 'द्वितीय शनिवार'], [11, 'अग्रसेन जयन्ती (ऐच्छिक)'], [20, 'विजया दशमी'], [24, 'चतुर्थ शनिवार']],
+    11: [[6, 'धनतेरस'], [7, 'दीपदान, रूप चतुर्दशी, नरक चतुर्दशी'], [8, 'महालक्ष्मी पूजा, दीपावली, भगवान महावीर निर्वाण दिवस'], [9, 'गोवर्धन पूजा'], [11, 'भाई दूज'], [14, 'द्वितीय शनिवार, नेहरू जयन्ती (बाल-दिवस)'], [24, 'गुरु नानक जयन्ती'], [28, 'चतुर्थ शनिवार']],
+    12: [[12, 'द्वितीय शनिवार'], [25, 'बड़ा दिन (क्रिसमस डे)'], [26, 'चतुर्थ शनिवार']]
+  };
+  var NAT = { 1: [[26, 'गणतंत्र दिवस']], 4: [[14, 'डॉ. अम्बेडकर जयंती']], 8: [[15, 'स्वतंत्रता दिवस']], 10: [[2, 'गांधी जयंती']], 12: [[25, 'क्रिसमस']] };
+  function pick(t, m, d) { var a = t[m] || [], i; for (i = 0; i < a.length; i++) if (a[i][0] === d) return a[i][1]; return ''; }
+  function arFor(y, m, d) { return y === 2026 ? pick(ARYA, m, d) : pick(NAT, m, d); }
+  function avFor(y, m, d) { return y === 2026 ? pick(AVK, m, d) : ''; }
+    function kalFor(y, m, d) {
     var a = y === 2026 ? KAL[m] : null, i;
     if (a) for (i = 0; i < a.length; i++) if (a[i][0] === d) return a[i][1];
     return '';
@@ -924,25 +1001,44 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
       cls = 'cd' + ((first + d - 1) % 7 === 0 ? ' s' : '') +
             (curSel && curSel.y === v.y && curSel.m === v.m && curSel.d === d ? ' sel' : '') +
             (today.y === v.y && today.m === v.m && today.d === d ? ' today' : '');
-      dots = (kalFor(v.y, v.m, d) ? '<i></i>' : '') + (natFor(v.m, d) ? '<i class="n"></i>' : '') + (PKMAP[k] ? '<i class="p"></i>' : '');
+      dots = (kalFor(v.y, v.m, d) ? '<i></i>' : '') + (avFor(v.y, v.m, d) ? '<i class="n"></i>' : '') + (PKMAP[k] ? '<i class="p"></i>' : '');
       h += '<button type="button" class="' + cls + '" data-d="' + d + '"><span class="dots">' + dots + '</span><span class="g">' + d + '</span><span class="t">' + lab + '</span></button>';
     }
     $('calGrid').innerHTML = h;
   }
+  var LT = { j: 'up', a: 'up', v: 'up' };
+  function ltAll(tbl) {
+    var o = [], m, a, i;
+    for (m = 1; m <= 12; m++) { a = tbl[m] || []; for (i = 0; i < a.length; i++) o.push({ y: 2026, m: m, d: a[i][0], t: a[i][1] }); }
+    return o;
+  }
   function renderParv() {
-    var v = calView, a = v.y === 2026 ? (KAL[v.m] || []) : [], h = '';
-    $('parvSub').textContent = v.y === 2026
-      ? MONTHS[v.m - 1] + ' 2026 · पद्मोदय जैन कैलेंडर के अनुसार (तिथि के अनुसार)'
-      : 'यह सूची पद्मोदय जैन कैलेंडर 2026 की तारीख़ों पर आधारित है, इसलिए सिर्फ़ 2026 के लिए है।';
-    a.forEach(function (r) {
-      var isSel = curSel && curSel.y === v.y && curSel.m === v.m && curSel.d === r[0];
-      h += row({ name: r[0] + ' ' + SMON[v.m - 1] + ', ' + dayOf({ y: v.y, m: v.m, d: r[0] }), desc: r[1], right: '', cls: isSel ? 'now' : '' });
-    });
-    (NAT[v.m] || []).forEach(function (r) {
-      var isSel = curSel && curSel.y === v.y && curSel.m === v.m && curSel.d === r[0];
-      h += row({ name: r[0] + ' ' + SMON[v.m - 1] + ', ' + dayOf({ y: v.y, m: v.m, d: r[0] }), desc: r[1], right: '', cls: isSel ? 'now' : '' });
-    });
-    $('parvList').innerHTML = h;
+    var v = calView, sel = curSel || panchangDay(Date.now()), is26 = v.y === 2026;
+    var selKey = sel.y * 10000 + sel.m * 100 + sel.d, selUTC = Date.UTC(sel.y, sel.m - 1, sel.d);
+    function build(k, tbl, listId, subId, label, empty, note) {
+      var up = LT[k] === 'up', arr, o = '';
+      $(k + 'Up').setAttribute('aria-selected', up);
+      $(k + 'All').setAttribute('aria-selected', !up);
+      if (up) {
+        arr = ltAll(tbl).filter(function (e) { return e.y * 10000 + e.m * 100 + e.d >= selKey; }).slice(0, 8);
+        $(subId).textContent = 'चुनी हुई तारीख़ से आगे के ' + label + ' · ' + note;
+      } else {
+        arr = (tbl[v.m] || []).map(function (r) { return { y: v.y, m: v.m, d: r[0], t: r[1] }; });
+        $(subId).textContent = MONTHS[v.m - 1] + ' ' + v.y + ' के सभी ' + label + ' · ' + note;
+      }
+      arr.forEach(function (e) {
+        var key = e.y * 10000 + e.m * 100 + e.d, diff = Math.round((Date.UTC(e.y, e.m - 1, e.d) - selUTC) / 864e5);
+        o += row({
+          name: e.d + ' ' + SMON[e.m - 1] + (up ? ' ' + String(e.y).slice(2) : '') + ', ' + dayOf(e), desc: e.t,
+          right: up ? (diff === 0 ? 'आज' : diff === 1 ? 'कल' : diff + ' दिन बाद') : '', rc: up ? 'val' : 'tm',
+          cls: key === selKey ? 'now' : (key < selKey ? 'past' : '')
+        });
+      });
+      $(listId).innerHTML = o || '<li><span class="ds">' + empty + '</span></li>';
+    }
+    build('j', KAL, 'parvList', 'parvSub', 'जैन पर्व', 'कोई जैन पर्व नहीं', 'पद्मोदय जैन कैलेंडर 2026');
+    build('a', is26 || LT.a === 'up' ? ARYA : NAT, 'aryaList', 'arySub', 'त्यौहार', 'इस सूची में कोई त्यौहार नहीं', 'पद्मोदय जैन कैलेंडर 2026');
+    build('v', is26 || LT.v === 'up' ? AVK : {}, 'avkList', 'avkSub', 'अवकाश', 'इस सूची में कोई अवकाश नहीं', 'सभी अवकाश राजकीय गजट देखकर मान्य करें');
   }
 
   var manualSel = null, tab = 'day', userTab = false, chKind = 'ch', festTab = 'up', pkTab = 'up';
@@ -968,7 +1064,7 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
     $('varaTxt').textContent = VARA[D.wd];
     $('tithiName').textContent = D.tithi.name;
     $('tithiUntil').innerHTML = (D.tithi.end ? untilHtml(D.tithi.end, sel) + ' · ' : '') + 'फिर ' + D.tithi.next;
-    $('jainLine').textContent = D.jain.purn + ' · विक्रम संवत् ' + D.years.jainVS;
+    $('jainLine').textContent = D.jain.purn + ' · वीर संवत् ' + D.years.veer;
     $('nakName').textContent = D.nak.name;
     $('nakUntil').innerHTML = D.nak.end ? untilHtml(D.nak.end, sel) : '';
     $('riseTxt').innerHTML = timeHtml(D.rise);
@@ -1065,9 +1161,10 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
       desc: D.jain.adhik ? 'अधिक मास' : (D.jain.vad ? 'गुजराती (अमान्त) गणना: ' + D.jain.aman : '') });
     var kp = kalFor(sel.y, sel.m, sel.d);
     if (kp) rows.unshift({ name: 'जैन पर्व / कल्याणक', right: '', desc: kp });
-    var np = natFor(sel.m, sel.d);
-    if (np) rows.unshift({ name: 'राष्ट्रीय पर्व / अवकाश', right: '', desc: np });
-    rows.push({ name: 'विक्रम संवत् (जैन)', right: String(D.years.jainVS), rc: 'val', desc: 'कार्तिक सुद १ से बदलता है' });
+    var av = avFor(sel.y, sel.m, sel.d), ar = arFor(sel.y, sel.m, sel.d);
+    if (av) rows.unshift({ name: 'अवकाश', right: '', desc: av });
+    if (ar) rows.unshift({ name: 'राष्ट्रीय एवं आर्य त्यौहार', right: '', desc: ar });
+    rows.push({ name: 'वीर निर्वाण संवत्', right: String(D.years.veer), rc: 'val', desc: 'कार्तिक सुद १ से बदलता है' });
     rows.push({ name: 'विक्रम संवत् (हिंदू)', right: String(D.years.hinduVS), rc: 'val', desc: 'चैत्र सुद १ से बदलता है' });
     rows.push({ name: 'शक संवत्', right: String(D.years.shaka), rc: 'val' });
     rows.push({ name: 'कलि वर्ष', right: String(D.years.kali), rc: 'val' });
@@ -1178,6 +1275,10 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
     render();
     try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (err) { window.scrollTo(0, 0); }
   });
+  ['j', 'a', 'v'].forEach(function (k) {
+    $(k + 'Up').addEventListener('click', function () { LT[k] = 'up'; renderParv(); });
+    $(k + 'All').addEventListener('click', function () { LT[k] = 'all'; renderParv(); });
+  });
   $('pkUp').addEventListener('click', function () { pkTab = 'up'; render(); });
   $('pkAll').addEventListener('click', function () { pkTab = 'all'; render(); });
   $('festUp').addEventListener('click', function () { festTab = 'up'; render(); });
@@ -1279,3 +1380,5 @@ window.open('https://wa.me/919799668800?text='+encodeURIComponent(t),'_blank');}
   setInterval(function () { if (!document.hidden) safeRender(); }, 30000);
 })();
 </script>
+<script src="supabase-counter.js"></script>
+<script src="supabase-reviews.js"></script>
