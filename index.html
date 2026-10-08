@@ -601,6 +601,251 @@ body::before{
   .nature-scene *{animation:none !important}
 }
 
+
+/* ============================================================
+   REALISTIC NATURE + CLEAN APPLE GLASS — FINAL VISUAL OVERRIDE
+   Existing content, data and JavaScript are intentionally untouched.
+   ============================================================ */
+
+html, body {
+  background: #0d403b !important;
+}
+
+body {
+  color: #14231f !important;
+  min-height: 100vh;
+}
+
+/* Real photographic nature environment — no CSS-drawn tree/water */
+.nature-scene {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: -20 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  isolation: isolate !important;
+  background:
+    linear-gradient(180deg, rgba(7,35,30,.12), rgba(4,40,34,.20)),
+    url("https://images.mindtrip.ai/attractions/5c4b/9fb5/a95a/75c8/1118/43f9/fd1b/2b00") center/cover no-repeat !important;
+}
+
+/* Soft photographic water layer at the bottom */
+.nature-scene::before {
+  content: "";
+  position: absolute;
+  inset: 45% -5% -5% -5%;
+  background:
+    linear-gradient(180deg, rgba(5,46,48,0), rgba(4,45,50,.18) 18%, rgba(4,37,43,.34)),
+    url("https://images.unsplash.com/photo-1680190037637-5959b888a8e9?auto=format&fit=crop&fm=jpg&q=82&w=2200")
+      center bottom/cover no-repeat;
+  opacity: .72;
+  mix-blend-mode: normal;
+  filter: saturate(108%) contrast(104%);
+}
+
+/* Real flowers as a restrained photographic accent */
+.nature-scene::after {
+  content: "";
+  position: absolute;
+  right: -3%;
+  bottom: -4%;
+  width: min(42vw, 520px);
+  height: min(38vh, 420px);
+  background:
+    linear-gradient(135deg, rgba(5,35,28,.30), rgba(5,35,28,0) 55%),
+    url("https://images.unsplash.com/photo-1550806383-8e8abadd62c1?fm=jpg&q=78&w=1400")
+      center/cover no-repeat;
+  opacity: .27;
+  filter: saturate(112%) contrast(104%);
+  border-radius: 55% 0 0 0;
+  transform: rotate(-2deg);
+}
+
+/* Remove all previous artificial CSS nature objects */
+.nature-scene .water,
+.nature-scene .flow,
+.nature-scene .mist,
+.nature-scene .banyan,
+.nature-scene .flowers,
+.nature-scene .petals,
+.nature-scene .sparks {
+  display: none !important;
+}
+
+/* Very light photographic atmosphere, never over the content */
+.app {
+  position: relative;
+  z-index: 2;
+}
+
+/* Apple-style floating header, but readable */
+.top {
+  padding: 12px 14px !important;
+  border-radius: 20px !important;
+  background: rgba(255,255,255,.78) !important;
+  border: 1px solid rgba(255,255,255,.88) !important;
+  box-shadow:
+    0 12px 32px rgba(0,0,0,.14),
+    inset 0 1px 0 rgba(255,255,255,.95),
+    inset 0 0 0 1px rgba(202,163,74,.24) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(135%) !important;
+  backdrop-filter: blur(18px) saturate(135%) !important;
+}
+
+.brand {
+  color: #10231e !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,.8);
+}
+
+.place {
+  color: #39534c !important;
+}
+
+/* Clean premium glass cards:
+   substantially less transparency than the previous version */
+.card {
+  background:
+    linear-gradient(145deg,
+      rgba(255,255,255,.94),
+      rgba(247,251,249,.88)) !important;
+  color: #15231f !important;
+  border: 1px solid rgba(255,255,255,.96) !important;
+  border-radius: 24px !important;
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.16),
+    0 4px 12px rgba(0,0,0,.08),
+    inset 0 1px 0 rgba(255,255,255,.98),
+    inset 0 0 0 1px rgba(202,163,74,.38) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(125%) !important;
+  backdrop-filter: blur(15px) saturate(125%) !important;
+}
+
+/* Gold optical edge — subtle, not decorative noise */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(224,190,104,.85),
+    rgba(255,255,255,.0) 32%,
+    rgba(184,143,47,.48) 72%,
+    rgba(255,255,255,.0)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Hero remains special, but text must be crystal clear */
+.hero {
+  background:
+    linear-gradient(135deg, rgba(18,69,61,.93), rgba(22,104,91,.88)) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,.62) !important;
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.30),
+    inset 0 0 0 1px rgba(222,190,104,.48) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+.hero .hero-meta,
+.hero .tithi,
+.hero .tithi-until,
+.hero .nak,
+.hero .lbl,
+.hero .nak b,
+.hero .nak .dim {
+  color: #fff !important;
+}
+
+/* Controls: solid enough to read over photography */
+.datebar button.step,
+.datepick,
+#todayBtn,
+.seg,
+.place-sel,
+.gps-btn {
+  background: rgba(255,255,255,.94) !important;
+  color: #17241f !important;
+  border: 1px solid rgba(196,157,66,.62) !important;
+  box-shadow:
+    0 5px 15px rgba(0,0,0,.09),
+    inset 0 1px 0 rgba(255,255,255,.98) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.rows li {
+  border-top-color: rgba(45,74,65,.16) !important;
+}
+
+.sub,
+.muted,
+.place {
+  color: #4a625a !important;
+}
+
+/* Preserve dark-mode functionality but keep readability */
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #eef7f3 !important;
+  }
+  .top {
+    background: rgba(20,32,29,.88) !important;
+  }
+  .brand { color: #f5fbf8 !important; }
+  .place, .sub, .muted { color: #b9cbc4 !important; }
+  .card {
+    background:
+      linear-gradient(145deg,
+        rgba(25,38,34,.94),
+        rgba(19,31,28,.91)) !important;
+    color: #edf6f2 !important;
+    border-color: rgba(255,255,255,.18) !important;
+  }
+  .datebar button.step,
+  .datepick,
+  #todayBtn,
+  .seg,
+  .place-sel,
+  .gps-btn {
+    background: rgba(24,35,32,.94) !important;
+    color: #eef7f3 !important;
+  }
+}
+
+/* Mobile: photograph stays natural and content remains dominant */
+@media (max-width: 700px) {
+  .nature-scene {
+    background-position: 60% center !important;
+  }
+  .nature-scene::after {
+    width: 62vw;
+    height: 30vh;
+    opacity: .18;
+  }
+  .card {
+    border-radius: 20px !important;
+  }
+}
+
+/* Respect reduced-motion settings */
+@media (prefers-reduced-motion: reduce) {
+  .nature-scene,
+  .nature-scene::before,
+  .nature-scene::after {
+    animation: none !important;
+  }
+}
+
 </style>
 
 
