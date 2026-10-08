@@ -1,8 +1,8 @@
 /* Supabase visitor counter: कुल विज़िटर और अभी ऑनलाइन
    सिर्फ़ इसी फ़ाइल में अपनी URL और key भरें। */
 (function () {
-  var SB_URL = 'YOUR-PROJECT-URL';   // जैसे https://abcd1234.supabase.co
-  var SB_KEY = 'YOUR-ANON-KEY';      // Supabase का anon public key (service_role कभी नहीं)
+  var SB_URL = 'https://vqmfuwzdnccnqbahbbsm.supabase.co';   // जैसे https://abcd1234.supabase.co
+  var SB_KEY = 'sb_publishable_mWETDstfbXsyJ_SVtflg8w_zrpcITKo';      // Supabase का anon public key (service_role कभी नहीं)
   window.SB_CONFIG = { url: SB_URL, key: SB_KEY };   // supabase-reviews.js भी इन्हीं को पढ़ती है
 
   function g(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
