@@ -317,6 +317,121 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
 .rv-stars button.on { color: #E8A317; opacity: 1; }
 </style>
 
+<style id="realistic-nature-glass-skin">
+  :root {
+    --bg: #101b1b;
+    --surface: rgba(12, 24, 25, .70);
+    --ink: #fffaf0;
+    --muted: #e4ddca;
+    --line: rgba(226, 190, 112, .48);
+    --accent: #d9ad54;
+    --accent-ink: #21190b;
+    --hero-bg: #172c2b;
+    --hero-fg: #fffaf0;
+    --hero-dim: #f0dcae;
+    --hero-line: rgba(239, 207, 139, .44);
+    --g-bg: rgba(12, 25, 26, .68);
+    --g-bg2: rgba(15, 29, 30, .52);
+    --g-bd: rgba(228, 190, 105, .62);
+    --g-hi: rgba(255, 244, 214, .28);
+    --g-sh: 0 14px 36px rgba(0, 0, 0, .32), 0 2px 8px rgba(0, 0, 0, .2);
+    --hero-grad: linear-gradient(145deg, rgba(20, 55, 49, .90), rgba(12, 28, 31, .88));
+    --hero-grad-n: linear-gradient(145deg, rgba(25, 30, 57, .92), rgba(12, 17, 31, .90));
+    color-scheme: dark;
+  }
+  html { min-height: 100%; background: #10201d; }
+  body {
+    min-height: 100vh;
+    background:
+      linear-gradient(180deg, rgba(6, 19, 18, .48), rgba(5, 17, 18, .68)),
+      url("https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=2200&q=90")
+      center center / cover fixed no-repeat,
+      #10201d !important;
+    color: var(--ink);
+  }
+  .top .brand { color: #fff8e9; text-shadow: 0 2px 18px rgba(0,0,0,.45); }
+  .place, .sub, .note, .gps-msg { color: #f0e8d6; }
+  .card, .datebar button.step, .datepick, #todayBtn, .seg, .place-sel,
+  .gps-btn, .fb-form input, .fb-form textarea {
+    -webkit-backdrop-filter: blur(20px) saturate(145%);
+    backdrop-filter: blur(20px) saturate(145%);
+  }
+  .card {
+    color: #fffaf0;
+    background: rgba(10, 24, 25, .70) !important;
+    border: 1px solid rgba(226, 190, 112, .62) !important;
+    box-shadow: 0 16px 38px rgba(0,0,0,.28),
+                inset 0 1px 0 rgba(255,245,218,.24),
+                inset 0 0 0 1px rgba(255,255,255,.025) !important;
+  }
+  .hero {
+    background: var(--hero-grad) !important;
+    border: 1px solid rgba(238, 204, 130, .82) !important;
+    box-shadow: 0 20px 44px rgba(0,0,0,.35),
+                inset 0 1px 0 rgba(255,245,218,.32) !important;
+  }
+  .hero.night { background: var(--hero-grad-n) !important; }
+  .datebar button.step, .datepick, .place-sel, .seg, .gps-btn, #todayBtn {
+    color: #fff7e6;
+    background: rgba(11, 25, 26, .70) !important;
+    border: 1px solid rgba(226, 190, 112, .66) !important;
+    box-shadow: inset 0 1px 0 rgba(255,245,218,.20), 0 6px 18px rgba(0,0,0,.18);
+  }
+  .datepick, .datebar button.step { color: #fff7e6; }
+  #todayBtn, .gps-btn { color: #f3d58f; }
+  .seg button { color: #f0e4c8; }
+  .seg button[aria-selected="true"] {
+    color: #21190b !important;
+    background: linear-gradient(135deg, #f5dc9c, #c99a3e) !important;
+    box-shadow: 0 2px 12px rgba(219,174,78,.24);
+  }
+  .card h2, .nm, .tm, .val, .fb .who, .cal-head b { color: #fff8e9; }
+  .sub, .ds, .lbl, .nak .dim, .hero-meta, .tithi-until { color: #e8ddc5; }
+  .rows li { border-top-color: rgba(226,190,112,.22); }
+  .rows li.now, .rows li.next {
+    background: rgba(218, 174, 78, .17);
+    box-shadow: inset 0 0 0 1px rgba(232,195,111,.34);
+  }
+  .rows li.past { opacity: .76; }
+  .cal-grid .wd { color: #f0e4c8; }
+  .cal-grid .cd { color: #fff8e9; }
+  .cal-grid .cd .t, .cal-legend { color: #e4ddca; }
+  .cal-grid .cd.today { background: rgba(255,255,255,.12); border-color: #e6c16d; }
+  .cal-grid .cd.sel { background: linear-gradient(135deg,#f2d68f,#c49438); border-color: #f6dfa4; }
+  .cal-grid .cd.sel .g, .cal-grid .cd.sel .t { color: #21190b; }
+  .cal-head button {
+    color: #fff5dd;
+    background: rgba(11,25,26,.7);
+    border: 1px solid rgba(226,190,112,.66);
+  }
+  .fb-form input, .fb-form textarea {
+    color: #fffaf0 !important;
+    background: rgba(5,17,18,.62) !important;
+    border: 1px solid rgba(226,190,112,.55) !important;
+  }
+  .fb-form input::placeholder, .fb-form textarea::placeholder { color: #d6cbb2; opacity: 1; }
+  .fb-btns a.ml { color: #f2d58f; }
+  .note {
+    padding: 12px 14px;
+    border: 1px solid rgba(226,190,112,.38);
+    border-radius: 16px;
+    background: rgba(8,20,21,.68);
+    backdrop-filter: blur(16px);
+  }
+  #visitorBox { color: #fff6df; }
+  #diag { color: #ffe0a0 !important; }
+  @media (max-width: 600px) {
+    body { padding-inline: 10px; background-attachment: scroll, scroll, scroll !important; }
+    .card { border-radius: 20px; }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .card, .datebar button.step, .datepick, #todayBtn, .seg, .place-sel,
+    .gps-btn, .fb-form input, .fb-form textarea { backdrop-filter: none; -webkit-backdrop-filter: none; }
+    .card { background: #132526 !important; }
+  }
+</style>
+
+
 <main class="app">
   <header class="top">
     <div class="brand">जैन पंचांग</div>
