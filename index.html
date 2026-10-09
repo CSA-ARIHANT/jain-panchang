@@ -407,6 +407,25 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
   .hero.night .moon-lit { fill: #f2b43a; }
   .hero.night .moon-glow { fill: #f2b43a; fill-opacity: .28; }
   .hero::before { display: none; }
+  /* Day-time hero: strong dark text on light panel (also when phone is in dark mode) */
+  .hero:not(.night) {
+    background: linear-gradient(135deg, rgba(236, 248, 255, .97), rgba(205, 232, 250, .96)) !important;
+    color: #0b2536 !important;
+  }
+  .hero:not(.night) .tithi, .hero:not(.night) .nak b, .hero:not(.night) .sunrow b,
+  .hero:not(.night) .hero-meta, .hero:not(.night) .per { color: #0b2536 !important; opacity: 1; }
+  .hero:not(.night) .tithi { text-shadow: none; font-weight: 600; }
+  .hero:not(.night) .tithi-until, .hero:not(.night) .lbl, .hero:not(.night) .nak .dim,
+  .hero:not(.night) .sky-cap { color: #1f4057 !important; }
+  .hero:not(.night) .nak { border-top-color: rgba(168, 117, 25, .55); }
+  .hero:not(.night) .arc-fill { fill: #0b2536; fill-opacity: .07; }
+  .hero:not(.night) .arc-line { stroke: #1f4057; stroke-width: 1.8; }
+  .hero:not(.night) .horizon { stroke: rgba(31, 64, 87, .55); }
+  .hero:not(.night) .sun { fill: #e8890c; stroke: #a85a00; stroke-width: 1; }
+  .hero:not(.night) .sun-glow { fill: #f2a21b; fill-opacity: .35; }
+  .hero:not(.night) .moon-dark { fill: rgba(11,37,54,.2); stroke: rgba(11,37,54,.55); }
+  .hero:not(.night) .moon-lit { fill: #f2b43a; }
+  .hero:not(.night) .moon-glow { fill: #f2b43a; fill-opacity: .25; }
   .datebar button.step, .datepick, .place-sel, .seg, .gps-btn, #todayBtn {
     color: #17364a !important;
     background: rgba(230, 245, 255, .90) !important;
@@ -438,6 +457,15 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
   .note { padding: 12px 14px; border: 1px solid rgba(190,143,42,.50); border-radius: 16px; background: rgba(232,246,255,.88); backdrop-filter: blur(16px); }
   #visitorBox { color: #17364a !important; }
   #diag { color: #7a2a1f !important; }
+  /* Strong highlight for the current / next row */
+  .rows li.now, .rows li.next {
+    background: linear-gradient(90deg, rgba(240,180,50,.62), rgba(255,232,165,.55)) !important;
+    box-shadow: inset 5px 0 0 #a87519, inset 0 0 0 1px rgba(168,117,25,.6) !important;
+  }
+  .rows li.now .nm, .rows li.next .nm, .rows li.now .tm, .rows li.next .tm { color: #0b2536 !important; font-weight: 700; }
+  .rows li.now .ds, .rows li.next .ds { color: #1f4057 !important; }
+  .rows li.now .badge, .rows li.next .badge { background: #8d5a00; color: #fff; }
+  .rows li.past { opacity: .7; }
   html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; overflow-x: hidden; }
   img, svg, input, select, textarea { max-width: 100%; }
   @media (max-width: 600px) {
@@ -535,6 +563,48 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
     <div class="cal-legend"><span><i></i>जैन पर्व / कल्याणक</span><span><i class="p"></i>पक्खी</span><span><i class="n"></i>अवकाश</span></div>
   </section>
 
+  <section class="card" aria-labelledby="pachTitle">
+    <h2 id="pachTitle">पच्चक्खाण का समय</h2>
+    <p class="sub">इस समय के बाद पच्चक्खाण पूरा होता है</p>
+    <ul class="rows" id="pachList"></ul>
+  </section>
+
+  <section class="card" aria-labelledby="chTitle">
+    <div class="head">
+      <h2 id="chTitle">चौघड़िया और होरा</h2>
+      <div class="seg" role="tablist" aria-label="दिन या रात">
+        <button type="button" role="tab" id="tabDay" aria-selected="true">दिन</button>
+        <button type="button" role="tab" id="tabNight" aria-selected="false">रात</button>
+      </div>
+    </div>
+    <div class="kind-row">
+      <div class="seg" role="tablist" aria-label="चौघड़िया या होरा">
+        <button type="button" role="tab" id="kindCh" aria-selected="true">चौघड़िया</button>
+        <button type="button" role="tab" id="kindHora" aria-selected="false">होरा</button>
+      </div>
+    </div>
+    <p class="sub" id="chSub"></p>
+    <ul class="rows" id="chList"></ul>
+  </section>
+
+  <section class="card" aria-labelledby="pkTitle">
+    <div class="head">
+      <h2 id="pkTitle">पक्खी (पाक्षिक पर्व)</h2>
+      <div class="seg" role="tablist" aria-label="पक्खी की सूची">
+        <button type="button" role="tab" id="pkUp" aria-selected="true">आगामी</button>
+        <button type="button" role="tab" id="pkAll" aria-selected="false">सभी</button>
+      </div>
+    </div>
+    <p class="sub" id="pkSub"></p>
+    <ul class="rows" id="pkList"></ul>
+  </section>
+
+  <section class="card" aria-labelledby="muhTitle">
+    <h2 id="muhTitle">शुभ और अशुभ मुहूर्त</h2>
+    <p class="sub">ब्रह्म और अभिजीत शुभ हैं। राहुकाल, यमगंड और गुलिक में नया काम शुरू न करें।</p>
+    <ul class="rows" id="muhList"></ul>
+  </section>
+
   <section class="card" aria-labelledby="parvTitle">
     <div class="head">
       <h2 id="parvTitle">जैन पर्व और कल्याणक</h2>
@@ -571,51 +641,9 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
     <ul class="rows" id="avkList"></ul>
   </section>
 
-  <section class="card" aria-labelledby="muhTitle">
-    <h2 id="muhTitle">शुभ और अशुभ मुहूर्त</h2>
-    <p class="sub">ब्रह्म और अभिजीत शुभ हैं। राहुकाल, यमगंड और गुलिक में नया काम शुरू न करें।</p>
-    <ul class="rows" id="muhList"></ul>
-  </section>
-
-  <section class="card" aria-labelledby="pachTitle">
-    <h2 id="pachTitle">पच्चक्खाण का समय</h2>
-    <p class="sub">इस समय के बाद पच्चक्खाण पूरा होता है</p>
-    <ul class="rows" id="pachList"></ul>
-  </section>
-
-  <section class="card" aria-labelledby="chTitle">
-    <div class="head">
-      <h2 id="chTitle">चौघड़िया और होरा</h2>
-      <div class="seg" role="tablist" aria-label="दिन या रात">
-        <button type="button" role="tab" id="tabDay" aria-selected="true">दिन</button>
-        <button type="button" role="tab" id="tabNight" aria-selected="false">रात</button>
-      </div>
-    </div>
-    <div class="kind-row">
-      <div class="seg" role="tablist" aria-label="चौघड़िया या होरा">
-        <button type="button" role="tab" id="kindCh" aria-selected="true">चौघड़िया</button>
-        <button type="button" role="tab" id="kindHora" aria-selected="false">होरा</button>
-      </div>
-    </div>
-    <p class="sub" id="chSub"></p>
-    <ul class="rows" id="chList"></ul>
-  </section>
-
   <section class="card" aria-labelledby="detTitle">
     <h2 id="detTitle">पंचांग विवरण</h2>
     <ul class="rows" id="detList"></ul>
-  </section>
-
-  <section class="card" aria-labelledby="pkTitle">
-    <div class="head">
-      <h2 id="pkTitle">पक्खी (पाक्षिक पर्व)</h2>
-      <div class="seg" role="tablist" aria-label="पक्खी की सूची">
-        <button type="button" role="tab" id="pkUp" aria-selected="true">आगामी</button>
-        <button type="button" role="tab" id="pkAll" aria-selected="false">सभी</button>
-      </div>
-    </div>
-    <p class="sub" id="pkSub"></p>
-    <ul class="rows" id="pkList"></ul>
   </section>
 
   <section class="card" aria-labelledby="festTitle">
@@ -1287,12 +1315,14 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
     $('pachList').innerHTML = html;
 
     /* chaughadiya / hora */
-    if (!userTab) tab = (isToday && now >= D.set) ? 'night' : 'day';
+    var NG = D;
+    if (isToday && now < D.rise) { var pd = ymd(sel.y, sel.m, sel.d - 1); NG = computeDay(pd.y, pd.m, pd.d); }
+    if (!userTab) tab = (isToday && (now >= D.set || now < D.rise)) ? 'night' : 'day';
     $('tabDay').setAttribute('aria-selected', tab === 'day');
     $('tabNight').setAttribute('aria-selected', tab === 'night');
     $('kindCh').setAttribute('aria-selected', chKind === 'ch');
     $('kindHora').setAttribute('aria-selected', chKind === 'hora');
-    var sl = chKind === 'ch' ? (tab === 'day' ? D.chDay : D.chNight) : (tab === 'day' ? D.horaDay : D.horaNight);
+    var sl = chKind === 'ch' ? (tab === 'day' ? D.chDay : NG.chNight) : (tab === 'day' ? D.horaDay : NG.horaNight);
     var one = Math.round((sl[0].e - sl[0].s) / 60000);
     $('chSub').textContent = (tab === 'day' ? 'सूर्योदय से सूर्यास्त तक' : 'सूर्यास्त से अगले सूर्योदय तक') + ', ' + sl.length + ' भाग, हर भाग लगभग ' + one + ' मिनट का';
     html = '';
