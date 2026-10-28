@@ -498,6 +498,32 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
 </style>
 
 
+<style id="tabs-ui">
+  .tabs { position: sticky; top: 0; z-index: 20; display: flex; gap: 6px; overflow-x: auto; padding: 8px 8px; border-radius: 18px;
+    background: rgba(232,246,255,.94); border: 1px solid rgba(190,143,42,.72); box-shadow: 0 8px 20px rgba(15,45,65,.16);
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button { flex: none; min-height: 42px; padding: 0 15px; border-radius: 13px; border: 1px solid transparent; background: transparent;
+    color: #24485e; font-weight: 600; white-space: nowrap; }
+  .tabs button[aria-selected="true"] { background: linear-gradient(135deg,#bd8a2d,#8d6418); color: #fff; box-shadow: 0 2px 10px rgba(140,95,20,.3); }
+  .tabpanel { display: flex; flex-direction: column; gap: 14px; }
+  .tabpanel[hidden] { display: none; }
+  .scrollbox { position: relative; max-height: min(58vh, 400px); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding-right: 2px; }
+  .scrollbox::-webkit-scrollbar { width: 5px; }
+  .scrollbox::-webkit-scrollbar-thumb { background: rgba(168,117,25,.55); border-radius: 4px; }
+  /* bigger first page */
+  #p-home .hero { padding: 26px 22px 24px; }
+  #p-home .tithi { font-size: clamp(3rem, 17vw, 4.6rem); }
+  #p-home .hero-meta { font-size: 1.05rem; }
+  #p-home .nak b { font-size: 1.3rem; }
+  #p-home .sunrow b { font-size: 1.3rem; }
+  .nowcard .rows li { padding: 12px 8px; }
+  .cal-grid { touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+  .cal-grid.sl { animation: calL .22s ease-out; }
+  .cal-grid.sr { animation: calR .22s ease-out; }
+  @keyframes calL { from { transform: translateX(36px); opacity: .25; } to { transform: none; opacity: 1; } }
+  @keyframes calR { from { transform: translateX(-36px); opacity: .25; } to { transform: none; opacity: 1; } }
+</style>
 <main class="app">
   <header class="top">
     <div class="brand">जैन पंचांग-श्री अरिहंत विकास समिति</div>
@@ -505,7 +531,7 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
   </header>
   <p class="gps-msg" id="gpsMsg" role="status"></p>
   <div id="diag" style="font-size:13px;color:#8a2a1f;padding:0 2px 8px;word-break:break-word">यह व्यूअर स्क्रिप्ट नहीं चला रहा, इसलिए तारीख़ और पंचांग नहीं दिख रहे। इस फ़ाइल को Safari/Chrome जैसे ब्राउज़र में खोलें, या Claude ऐप में आर्टिफ़ैक्ट से देखें।</div>
-  <div class="card" id="visitorBox" style="text-align:center;margin:14px auto;max-width:520px;padding:12px"><b>👥 कुल विज़िटर: <span id="vcTotal">—</span></b> &nbsp;|&nbsp; <b>🟢 अभी ऑनलाइन: <span id="vcOnline">—</span></b></div>
+  
   <script>
     window.onerror = function (m, u, l, c) { var d = document.getElementById('diag'); if (d) d.textContent = 'JS त्रुटि: ' + m + ' (' + l + ':' + c + ')'; };
   </script>
@@ -521,6 +547,8 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
     <button id="todayBtn" type="button" hidden>आज</button>
   </nav>
 
+  <nav class="tabs" id="tabs" role="tablist" aria-label="विभाग"><button type="button" role="tab" id="t-home" data-tab="home" aria-selected="true">होम</button><button type="button" role="tab" id="t-pach" data-tab="pach" aria-selected="false">पच्चक्खाण</button><button type="button" role="tab" id="t-ch" data-tab="ch" aria-selected="false">चौघड़िया / होरा</button><button type="button" role="tab" id="t-muh" data-tab="muh" aria-selected="false">मुहूर्त</button><button type="button" role="tab" id="t-pk" data-tab="pk" aria-selected="false">पक्खी</button><button type="button" role="tab" id="t-kal" data-tab="kal" aria-selected="false">कल्याणक</button><button type="button" role="tab" id="t-parv" data-tab="parv" aria-selected="false">जैन पर्व</button><button type="button" role="tab" id="t-arya" data-tab="arya" aria-selected="false">त्यौहार</button><button type="button" role="tab" id="t-avk" data-tab="avk" aria-selected="false">अवकाश</button><button type="button" role="tab" id="t-det" data-tab="det" aria-selected="false">पंचांग विवरण</button><button type="button" role="tab" id="t-fb" data-tab="fb" aria-selected="false">फीडबैक</button></nav>
+  <div class="tabpanel" id="p-home" role="tabpanel">
   <section class="hero" id="hero" aria-labelledby="tithiName">
     <svg class="phase" viewBox="-12 -12 24 24" id="phaseSvg" role="img" aria-label="चंद्रमा की कला"><circle class="moon-glow" r="11.5"></circle><circle class="moon-dark" r="9"></circle><g id="phaseG"><path class="moon-lit" id="phaseLit" d=""></path></g></svg>
     <div class="hero-meta"><span id="pakshaTxt"></span> · <span id="varaTxt"></span></div>
@@ -557,9 +585,15 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
     </div>
   </section>
 
+  <section class="card nowcard" aria-labelledby="nowTitle">
+    <div class="head"><h2 id="nowTitle">आज और अभी</h2><span class="sub" id="nowClock" style="margin:0"></span></div>
+    <p class="sub" id="nowSub"></p>
+    <ul class="rows" id="nowList"></ul>
+  </section>
+
   <section class="card" aria-labelledby="calTitle">
     <h2 id="calTitle">मासिक कैलेंडर</h2>
-    <p class="sub">हर तारीख़ के नीचे सूर्योदय की जैन तिथि (सु = सुद, व = वद)। तारीख़ दबाकर उसका पंचांग देखें।</p>
+    <p class="sub">हर तारीख़ के नीचे सूर्योदय की जैन तिथि (सु = सुद, व = वद)। तारीख़ दबाकर उसका पंचांग देखें। महीना बदलने के लिए बाएँ या दाएँ स्वाइप करें।</p>
     <div class="cal-head">
       <button type="button" id="calPrev" aria-label="पिछला महीना">‹</button>
       <b id="calTitleTxt"></b>
@@ -569,12 +603,20 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
     <div class="cal-legend"><span><i></i>जैन पर्व / कल्याणक</span><span><i class="p"></i>पक्खी</span><span><i class="n"></i>अवकाश</span></div>
   </section>
 
+  <div class="card" id="visitorBox" style="text-align:center;margin:14px auto;max-width:520px;padding:12px"><b>👥 कुल विज़िटर: <span id="vcTotal">—</span></b> &nbsp;|&nbsp; <b>🟢 अभी ऑनलाइन: <span id="vcOnline">—</span></b></div>
+  </div>
+
+  <div class="tabpanel" id="p-pach" role="tabpanel" hidden>
   <section class="card" aria-labelledby="pachTitle">
     <h2 id="pachTitle">पच्चक्खाण का समय</h2>
     <p class="sub">इस समय के बाद पच्चक्खाण पूरा होता है</p>
-    <ul class="rows" id="pachList"></ul>
+    <ul class="rows scrollbox" id="pachList"></ul>
   </section>
 
+  
+  </div>
+
+  <div class="tabpanel" id="p-ch" role="tabpanel" hidden>
   <section class="card" aria-labelledby="chTitle">
     <div class="head">
       <h2 id="chTitle">चौघड़िया और होरा</h2>
@@ -590,9 +632,23 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
       </div>
     </div>
     <p class="sub" id="chSub"></p>
-    <ul class="rows" id="chList"></ul>
+    <ul class="rows scrollbox" id="chList"></ul>
   </section>
 
+  
+  </div>
+
+  <div class="tabpanel" id="p-muh" role="tabpanel" hidden>
+  <section class="card" aria-labelledby="muhTitle">
+    <h2 id="muhTitle">शुभ और अशुभ मुहूर्त</h2>
+    <p class="sub">ब्रह्म और अभिजीत शुभ हैं। राहुकाल, यमगंड और गुलिक में नया काम शुरू न करें।</p>
+    <ul class="rows scrollbox" id="muhList"></ul>
+  </section>
+
+  
+  </div>
+
+  <div class="tabpanel" id="p-pk" role="tabpanel" hidden>
   <section class="card" aria-labelledby="pkTitle">
     <div class="head">
       <h2 id="pkTitle">पक्खी (पाक्षिक पर्व)</h2>
@@ -603,15 +659,13 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
       </div>
     </div>
     <p class="sub" id="pkSub"></p>
-    <div id="pkList"></div>
+    <div class="scrollbox" id="pkList"></div>
   </section>
 
-  <section class="card" aria-labelledby="muhTitle">
-    <h2 id="muhTitle">शुभ और अशुभ मुहूर्त</h2>
-    <p class="sub">ब्रह्म और अभिजीत शुभ हैं। राहुकाल, यमगंड और गुलिक में नया काम शुरू न करें।</p>
-    <ul class="rows" id="muhList"></ul>
-  </section>
+  
+  </div>
 
+  <div class="tabpanel" id="p-kal" role="tabpanel" hidden>
   <section class="card" aria-labelledby="kalTitle">
     <div class="head">
       <h2 id="kalTitle">तीर्थंकर कल्याणक</h2>
@@ -622,9 +676,13 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
       </div>
     </div>
     <p class="sub" id="kalSub"></p>
-    <div id="kalList"></div>
+    <div class="scrollbox" id="kalList"></div>
   </section>
 
+  
+  </div>
+
+  <div class="tabpanel" id="p-parv" role="tabpanel" hidden>
   <section class="card" aria-labelledby="parvTitle">
     <div class="head">
       <h2 id="parvTitle">जैन पर्व / उत्सव</h2>
@@ -635,9 +693,13 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
       </div>
     </div>
     <p class="sub" id="parvSub"></p>
-    <div id="parvList"></div>
+    <div class="scrollbox" id="parvList"></div>
   </section>
 
+  
+  </div>
+
+  <div class="tabpanel" id="p-arya" role="tabpanel" hidden>
   <section class="card" aria-labelledby="aryaTitle">
     <div class="head">
       <h2 id="aryaTitle">राष्ट्रीय एवं आर्य त्यौहार</h2>
@@ -648,9 +710,13 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
       </div>
     </div>
     <p class="sub" id="arySub"></p>
-    <div id="aryaList"></div>
+    <div class="scrollbox" id="aryaList"></div>
   </section>
 
+  
+  </div>
+
+  <div class="tabpanel" id="p-avk" role="tabpanel" hidden>
   <section class="card" aria-labelledby="avkTitle">
     <div class="head">
       <h2 id="avkTitle">अवकाश</h2>
@@ -661,14 +727,23 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
       </div>
     </div>
     <p class="sub" id="avkSub"></p>
-    <div id="avkList"></div>
+    <div class="scrollbox" id="avkList"></div>
   </section>
 
+  
+  </div>
+
+  <div class="tabpanel" id="p-det" role="tabpanel" hidden>
   <section class="card" aria-labelledby="detTitle">
     <h2 id="detTitle">पंचांग विवरण</h2>
-    <ul class="rows" id="detList"></ul>
+    <ul class="rows scrollbox" id="detList"></ul>
   </section>
 
+  <p class="note">गणना <span id="noteLoc">भीलवाड़ा (25.34° उ., 74.63° पू.)</span> के सूर्योदय और सूर्यास्त पर आधारित है। सूचियों में हर तारीख़ के नीचे सूर्योदय की हिंदी तिथि और मास मारवाड़ी (पूर्णिमान्त) गणना से दिया है, यानी वद पक्ष में अगला मास दिखता है; गुजराती (अमान्त) गणना में वही तिथि पिछले मास की होती है। धनतेरस और दीवाली में संध्या की तिथि, कालीचौदस में मध्यरात्रि की तिथि और नवपद ओली की शुरुआत में तिथि का पहला दिन माना गया है। बाकी पर्वों में सूर्योदय की तिथि ली है, तिथि घटने पर पिछला दिन और बढ़ने पर अगला दिन। पक्खी की तारीख़ें श्रमण संघीय पक्खी पत्र 2026-27 से ली हैं, और ओली, दीवाली, निर्वाण कल्याणक, संवत्सरी और ज्ञानपंचमी की तारीख़ें उसी से मिलाई गई हैं। पर्व और संवत्सरी तय करने से पहले स्थानीय पंचांग से मिलान करें। तीर्थंकर कल्याणक और जैन पर्व / उत्सव की सूची पद्मोदय जैन कैलेंडर 2026 और "महत्वपूर्ण दिन मार्च 2026 – अप्रैल 2027" की एक्सेल सूची से बनी है (दीक्षा, जन्म जयन्ती, पद ग्रहण और देवलोक दिवस सहित); इनमें 2026 के बाद की तारीख़ें एक्सेल के अनुसार हैं और बाकी जैन त्यौहार गणना से जोड़े गए हैं। दूसरे शहरों में सूर्योदय-सूर्यास्त और तिथि का समय उस शहर के हिसाब से बदलता है; पक्खी और पर्व की तारीख़ें भीलवाड़ा के पंचांग से ली गई हैं, इसलिए कभी-कभी स्थानीय पंचांग से एक दिन का अंतर संभव है।</p>
+
+  </div>
+
+  <div class="tabpanel" id="p-fb" role="tabpanel" hidden>
   <section class="card rv" id="rvBox" style="display:none" aria-labelledby="rvTitle">
     <h2 id="rvTitle">समीक्षा और रेटिंग</h2>
     <p class="sub" id="rvSum">—</p>
@@ -697,8 +772,10 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
     </div>
   </section>
 
-  <p class="note">गणना <span id="noteLoc">भीलवाड़ा (25.34° उ., 74.63° पू.)</span> के सूर्योदय और सूर्यास्त पर आधारित है। सूचियों में हर तारीख़ के नीचे सूर्योदय की हिंदी तिथि और मास मारवाड़ी (पूर्णिमान्त) गणना से दिया है, यानी वद पक्ष में अगला मास दिखता है; गुजराती (अमान्त) गणना में वही तिथि पिछले मास की होती है। धनतेरस और दीवाली में संध्या की तिथि, कालीचौदस में मध्यरात्रि की तिथि और नवपद ओली की शुरुआत में तिथि का पहला दिन माना गया है। बाकी पर्वों में सूर्योदय की तिथि ली है, तिथि घटने पर पिछला दिन और बढ़ने पर अगला दिन। पक्खी की तारीख़ें श्रमण संघीय पक्खी पत्र 2026-27 से ली हैं, और ओली, दीवाली, निर्वाण कल्याणक, संवत्सरी और ज्ञानपंचमी की तारीख़ें उसी से मिलाई गई हैं। पर्व और संवत्सरी तय करने से पहले स्थानीय पंचांग से मिलान करें। तीर्थंकर कल्याणक और जैन पर्व / उत्सव की सूची पद्मोदय जैन कैलेंडर 2026 और "महत्वपूर्ण दिन मार्च 2026 – अप्रैल 2027" की एक्सेल सूची से बनी है (दीक्षा, जन्म जयन्ती, पद ग्रहण और देवलोक दिवस सहित); इनमें 2026 के बाद की तारीख़ें एक्सेल के अनुसार हैं और बाकी जैन त्यौहार गणना से जोड़े गए हैं। दूसरे शहरों में सूर्योदय-सूर्यास्त और तिथि का समय उस शहर के हिसाब से बदलता है; पक्खी और पर्व की तारीख़ें भीलवाड़ा के पंचांग से ली गई हैं, इसलिए कभी-कभी स्थानीय पंचांग से एक दिन का अंतर संभव है।</p>
-</main>
+  
+  </div>
+
+  </main>
 
 <script>
 (function(){
@@ -1194,7 +1271,7 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
     a:  { list: 'aryaList', sub: 'arySub', label: 'त्यौहार', note: 'पद्मोदय जैन कैलेंडर 2026', row: evRow },
     v:  { list: 'avkList', sub: 'avkSub', label: 'अवकाश', note: 'सभी अवकाश राजकीय गजट देखकर मान्य करें', row: evRow }
   };
-  function renderTab(k) {
+  function renderTab(k, force) {
     var o = LCFG[k], items = getItems(k), today = panchangDay(Date.now()), tk = key3(today.y, today.m, today.d);
     var sel = curSel || today, tab = TAB[k], arr, sub, out = '', last = -1, open = false, cnt = {};
     var ctx = { tab: tab, tk: tk, sk: key3(sel.y, sel.m, sel.d), tUTC: Date.UTC(today.y, today.m - 1, today.d) };
@@ -1216,6 +1293,7 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
     });
     if (open) out += '</ul>';
     $(o.list).innerHTML = out || '<p class="sub" style="padding:10px 4px">' + (tab === 'mo' ? 'इस माह में कोई ' + o.label + ' नहीं है' : 'आगे की कोई ' + o.label + ' सूची में नहीं है') + '</p>';
+    snap($(o.list), force);
   }
   function renderAllLists() { ['pk', 'k', 'j', 'a', 'v'].forEach(renderTab); }
   function renderParv() { renderAllLists(); }
@@ -1241,6 +1319,87 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
     delete G.j;
     renderTab('j');
   }
+
+
+  /* ===== पहला पन्ना: आज और अभी ===== */
+  function findSlot(arrs, now) {
+    var i, j, a;
+    for (i = 0; i < arrs.length; i++) { a = arrs[i]; for (j = 0; j < a.length; j++) if (now >= a[j].s && now < a[j].e) return { cur: a[j], next: a[j + 1] || null }; }
+    return null;
+  }
+  function renderNow(D, NG, sel, isToday, now) {
+    var rows = [], sk = key3(sel.y, sel.m, sel.d), i, r, pr, kp, ar, av, h = '';
+    $('nowTitle').textContent = isToday ? 'आज और अभी' : dayOf(sel) + ', ' + sel.d + ' ' + MONTHS[sel.m - 1] + ' का पंचांग';
+    $('nowClock').innerHTML = isToday ? 'अभी ' + timeHtml(now) : '';
+    $('nowSub').textContent = isToday ? 'इस समय चल रहे और आज के सभी कार्यक्रम' : 'चुनी हुई तारीख़ के कार्यक्रम और समय';
+    pr = PAKKHI.filter(function (x) { return key3(x[2], x[3], x[4]) === sk; })[0];
+    if (pr) rows.push({ name: pr[6] || PK_NAME[pr[1]], badge: '<span class="badge">पक्खी</span>', desc: pr[0] + ' ' + dev(pr[1]), right: '', cls: 'now' });
+    kp = kalFor(sel.y, sel.m, sel.d); if (kp) rows.push({ name: 'जैन पर्व / कल्याणक', desc: kp, right: '', cls: 'now' });
+    ar = arFor(sel.y, sel.m, sel.d); if (ar) rows.push({ name: 'राष्ट्रीय एवं आर्य त्यौहार', desc: ar, right: '' });
+    av = avFor(sel.y, sel.m, sel.d); if (av) rows.push({ name: 'अवकाश', desc: av, right: '' });
+    if (!pr && !kp && !ar && !av) rows.push({ name: 'आज कोई विशेष पर्व नहीं', desc: 'पर्व, कल्याणक या अवकाश सूची में नहीं है', right: '' });
+    if (isToday) {
+      var ch = findSlot([D.chDay, D.chNight, NG.chNight], now), hr = findSlot([D.horaDay, D.horaNight, NG.horaNight], now);
+      if (ch) rows.push({ name: 'चौघड़िया: ' + ch.cur.name, chip: chipHtml(ch.cur.tag), badge: '<span class="badge">अभी</span>',
+        desc: ch.next ? 'आगे: ' + ch.next.name + ' · ' + timeHtml(ch.next.s) : '', right: rangeHtml(ch.cur.s, ch.cur.e), cls: 'now' });
+      if (hr) rows.push({ name: 'होरा: ' + hr.cur.name, chip: chipHtml(hr.cur.tag), badge: '<span class="badge">अभी</span>',
+        desc: hr.next ? 'आगे: ' + hr.next.name + ' · ' + timeHtml(hr.next.s) : '', right: rangeHtml(hr.cur.s, hr.cur.e), cls: 'now' });
+      var act = D.muh.filter(function (x) { return now >= x.s && now < x.e; }), nx = D.muh.filter(function (x) { return x.s > now; })[0];
+      act.forEach(function (x) { rows.push({ name: x.name, chip: chipHtml(x.tag), badge: '<span class="badge">अभी</span>', desc: x.desc, right: rangeHtml(x.s, x.e), cls: 'now' }); });
+      if (!act.length) rows.push({ name: 'मुहूर्त', desc: 'अभी राहुकाल, यमगंड या गुलिक नहीं है' + (nx ? ' · अगला: ' + nx.name : ''), right: nx ? rangeHtml(nx.s, nx.e) : '' });
+      else if (nx) rows.push({ name: 'अगला मुहूर्त: ' + nx.name, chip: chipHtml(nx.tag), desc: nx.desc, right: rangeHtml(nx.s, nx.e) });
+      var np = D.pach.filter(function (x) { return x.t > now; })[0];
+      if (np) rows.push({ name: 'अगला पच्चक्खाण: ' + np.name, badge: '<span class="badge">अगला</span>', desc: np.desc, right: timeHtml(np.t), cls: 'next' });
+      else rows.push({ name: 'पच्चक्खाण', desc: 'आज के सभी पच्चक्खाण का समय बीत चुका है', right: '' });
+    } else {
+      D.muh.forEach(function (x) { rows.push({ name: x.name, chip: chipHtml(x.tag), desc: x.desc, right: rangeHtml(x.s, x.e) }); });
+    }
+    rows.push({ name: 'योग / करण', right: D.yoga.name, rc: 'val', desc: 'करण: ' + D.karana[0].name + ', ' + D.karana[1].name + ' · चंद्र राशि: ' + D.moonRashi.name });
+    if (D.panchak) rows.push({ name: 'पंचक', rc: 'val', right: D.panchak.on ? 'चल रहा है' : 'नहीं', desc: D.panchak.on ? untilHtml(D.panchak.end, sel) : '' });
+    for (i = 0; i < rows.length; i++) h += row(rows[i]);
+    $('nowList').innerHTML = h;
+  }
+
+  /* ===== स्क्रॉल सूचियाँ: चालू (या सबसे नज़दीकी) पंक्ति सबसे ऊपर ===== */
+  var forceNext = false;
+  function snap(box, force) {
+    if (!box || !box.offsetParent) return;
+    var t = box.querySelector('li.now') || box.querySelector('li.next'), lis = box.querySelectorAll('li'), i, sig;
+    if (!t) { for (i = 0; i < lis.length; i++) if (!lis[i].classList.contains('past')) { t = lis[i]; break; } }
+    if (!t) t = lis[lis.length - 1];
+    if (!t) return;
+    sig = box.id + '|' + lis.length + '|' + t.textContent.slice(0, 70);
+    if (!force && box.getAttribute('data-sig') === sig) { box.scrollTop = +(box.getAttribute('data-st') || 0); return; }
+    box.setAttribute('data-sig', sig);
+    box.scrollTop = Math.max(0, t.offsetTop - 4);
+    box.setAttribute('data-st', String(box.scrollTop));
+  }
+  function snapAll(force) {
+    var f = force || forceNext, bs = document.querySelectorAll('.scrollbox'), i;
+    forceNext = false;
+    for (i = 0; i < bs.length; i++) snap(bs[i], f);
+  }
+  (function () {
+    var bs = document.querySelectorAll('.scrollbox'), i;
+    for (i = 0; i < bs.length; i++) bs[i].addEventListener('scroll', function () { this.setAttribute('data-st', String(this.scrollTop)); }, { passive: true });
+  })();
+
+  var TABIDS = ['home', 'pach', 'ch', 'muh', 'pk', 'kal', 'parv', 'arya', 'avk', 'det', 'fb'];
+  function showTab(id) {
+    TABIDS.forEach(function (t) {
+      var p = $('p-' + t), b = $('t-' + t);
+      if (p) p.hidden = t !== id;
+      if (b) b.setAttribute('aria-selected', t === id ? 'true' : 'false');
+    });
+    var panel = $('p-' + id), bs = panel ? panel.querySelectorAll('.scrollbox') : [], i;
+    for (i = 0; i < bs.length; i++) snap(bs[i], true);
+    try { $('t-' + id).scrollIntoView({ inline: 'center', block: 'nearest' }); } catch (e) {}
+    try { window.scrollTo(0, 0); } catch (e) {}
+  }
+  $('tabs').addEventListener('click', function (e) {
+    var t = e.target; while (t && t !== this && !(t.getAttribute && t.getAttribute('data-tab'))) t = t.parentNode;
+    if (t && t !== this) showTab(t.getAttribute('data-tab'));
+  });
 
   var manualSel = null, tab = 'day', userTab = false, chKind = 'ch';
 
@@ -1379,15 +1538,17 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
     }
     rows.push({ name: 'रात्रिमान', right: durText(D.nightLen), rc: 'val' });
     $('detList').innerHTML = rows.map(row).join('');
+    renderNow(D, NG, sel, isToday, now);
 
     /* पक्खी, कल्याणक, पर्व और त्यौहार की सूचियाँ नीचे renderAllLists() में बनती हैं */
 
     /* calendar + सूचियाँ */
     var selKey2 = sel.y * 10000 + sel.m * 100 + sel.d;
-    if (selKey2 !== lastSelKey) { lastSelKey = selKey2; calView = { y: sel.y, m: sel.m }; }
+    if (selKey2 !== lastSelKey) { lastSelKey = selKey2; calView = { y: sel.y, m: sel.m }; forceNext = true; }
     curSel = sel;
     renderCal(today);
     renderAllLists();
+    snapAll(false);
     if (!FESTX && !festTimer) festTimer = setTimeout(function () { try { loadFest(); } catch (e) {} }, 60);
   }
 
@@ -1410,8 +1571,23 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
   $('tabNight').addEventListener('click', function () { tab = 'night'; userTab = true; render(); });
   $('kindCh').addEventListener('click', function () { chKind = 'ch'; render(); });
   $('kindHora').addEventListener('click', function () { chKind = 'hora'; render(); });
-  $('calPrev').addEventListener('click', function () { calView = calView.m === 1 ? { y: calView.y - 1, m: 12 } : { y: calView.y, m: calView.m - 1 }; renderCal(panchangDay(Date.now())); renderParv(); });
-  $('calNext').addEventListener('click', function () { calView = calView.m === 12 ? { y: calView.y + 1, m: 1 } : { y: calView.y, m: calView.m + 1 }; renderCal(panchangDay(Date.now())); renderParv(); });
+  $('calPrev').addEventListener('click', function () { calStep(-1); });
+  $('calNext').addEventListener('click', function () { calStep(1); });
+  function calStep(dir) {
+    calView = dir > 0 ? (calView.m === 12 ? { y: calView.y + 1, m: 1 } : { y: calView.y, m: calView.m + 1 })
+                      : (calView.m === 1 ? { y: calView.y - 1, m: 12 } : { y: calView.y, m: calView.m - 1 });
+    renderCal(panchangDay(Date.now())); renderParv();
+    var g = $('calGrid'); g.classList.remove('sl', 'sr'); void g.offsetWidth; g.classList.add(dir > 0 ? 'sl' : 'sr');
+  }
+  (function () {
+    var g = $('calGrid'), x0 = 0, y0 = 0, sw = false;
+    g.addEventListener('pointerdown', function (e) { x0 = e.clientX; y0 = e.clientY; sw = false; });
+    g.addEventListener('pointerup', function (e) {
+      var dx = e.clientX - x0, dy = e.clientY - y0;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4) { sw = true; calStep(dx < 0 ? 1 : -1); }
+    });
+    g.addEventListener('click', function (e) { if (sw) { e.stopImmediatePropagation(); e.preventDefault(); sw = false; } }, true);
+  })();
   $('calGrid').addEventListener('click', function (e) {
     var t = e.target; while (t && t !== this && !(t.getAttribute && t.getAttribute('data-d'))) t = t.parentNode;
     if (!t || t === this) return;
@@ -1421,7 +1597,7 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
   });
   ['pk', 'k', 'j', 'a', 'v'].forEach(function (k) {
     [['mo', 'Mo'], ['up', 'Up'], ['all', 'All']].forEach(function (s) {
-      $(k + s[1]).addEventListener('click', function () { TAB[k] = s[0]; renderTab(k); });
+      $(k + s[1]).addEventListener('click', function () { TAB[k] = s[0]; renderTab(k, true); });
     });
   });
 
