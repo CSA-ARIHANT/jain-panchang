@@ -499,13 +499,12 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
 
 
 <style id="tabs-ui">
-  .tabs { position: sticky; top: 0; z-index: 20; display: flex; gap: 6px; overflow-x: auto; padding: 8px 8px; border-radius: 18px;
+  .tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 8px; border-radius: 18px;
     background: rgba(232,246,255,.94); border: 1px solid rgba(190,143,42,.72); box-shadow: 0 8px 20px rgba(15,45,65,.16);
-    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tabs button { flex: none; min-height: 42px; padding: 0 15px; border-radius: 13px; border: 1px solid transparent; background: transparent;
-    color: #24485e; font-weight: 600; white-space: nowrap; }
-  .tabs button[aria-selected="true"] { background: linear-gradient(135deg,#bd8a2d,#8d6418); color: #fff; box-shadow: 0 2px 10px rgba(140,95,20,.3); }
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+  .tabs button { flex: 0 0 auto; min-height: 38px; padding: 0 12px; border-radius: 12px; border: 1px solid rgba(190,143,42,.35); background: rgba(255,255,255,.5);
+    color: #24485e; font-weight: 600; font-size: .92rem; white-space: nowrap; }
+  .tabs button[aria-selected="true"] { background: linear-gradient(135deg,#bd8a2d,#8d6418); color: #fff; border-color: transparent; box-shadow: 0 2px 10px rgba(140,95,20,.3); }
   .tabpanel { display: flex; flex-direction: column; gap: 14px; }
   .tabpanel[hidden] { display: none; }
   .scrollbox { position: relative; max-height: min(58vh, 400px); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding-right: 2px; }
