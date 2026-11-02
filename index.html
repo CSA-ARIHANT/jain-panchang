@@ -514,11 +514,14 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
 .dpv .lk div { border: 1.5px solid #a3211b; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 600; color: #7a1510; background: rgba(255,255,255,.55); font-size: .95rem; line-height: 1.15; }
 .dpv .lk div small { font-size: .72rem; color: #38576a; font-weight: 500; }
 .dpv .lk .e { border: 0; background: transparent; }
-.dpv .lk2 { position: relative; display: grid; grid-template-columns: repeat(4, 56px); grid-template-rows: repeat(4, 56px); width: 224px; margin: 12px auto; }
-.dpv .lk2 > div { display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 600; color: #7a1510; font-size: 1rem; line-height: 1.1; background: rgba(255,255,255,.55); border: 1.5px solid #a3211b; }
-.dpv .lk2 > div small { font-size: .72rem; color: #38576a; font-weight: 500; }
+.dpv .lk2 { position: relative; display: grid; grid-template-columns: repeat(4, 60px); grid-template-rows: repeat(4, 60px); width: 240px; margin: 12px auto; }
+.dpv .lk2 > div { display: flex; flex-direction: column-reverse; align-items: center; justify-content: center; gap: 0; font-weight: 600; color: #7a1510; font-size: 1.05rem; line-height: 1.3; background: #FFFDF6; border: 1.5px solid #a3211b; box-sizing: border-box; overflow: visible; }
+.dpv .lk2 > div small { font-size: .78rem; line-height: 1.2; color: #7a1510; font-weight: 500; }
 .dpv .lk2 .sb { border: 4px double #a3211b; }
-.dpv .lk2 .cc { position: absolute; left: 50%; top: 50%; width: 64px; height: 52px; transform: translate(-50%, -50%); border: 4px double #a3211b; background: var(--surface, #fff); z-index: 1; }
+.dpv .lk2 .cc { position: absolute; left: 50%; top: 50%; width: 40px; height: 36px; transform: translate(-50%, -50%); border: 3px double #a3211b; background: #FFF3D6; color: #7a1510; z-index: 1; font-size: .85rem; line-height: 1.1; }
+.dpv .lk2 .cc small { font-size: .66rem; line-height: 1.1; }
+.dpv .lk2 .up { justify-content: flex-end; padding-top: 3px; }
+.dpv .lk2 .dn { justify-content: flex-start; padding-bottom: 3px; }
 .dpv .vyf { display: inline-block; border: 5px double #a3211b; padding: 6px; margin: 8px auto; }
 .dpv .vyf table { border-collapse: separate; border-spacing: 0; }
 .dpv .vyf td.n { border: 1.5px solid #a3211b; width: 54px; height: 50px; text-align: center; font-weight: 600; color: #7a1510; background: rgba(255,255,255,.55); }
@@ -810,10 +813,10 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
         <div class="lk2" aria-label="लक्ष्मी यंत्र">
           <div class="sb" style="grid-column:3;grid-row:1">ह्रीँ<small>१३</small></div>
           <div class="sb" style="grid-column:1;grid-row:2">क<small>६</small></div>
-          <div style="grid-column:2;grid-row:2">स्तु<small>१०</small></div>
-          <div style="grid-column:3;grid-row:2">टा<small>४</small></div>
-          <div style="grid-column:2;grid-row:3">मो<small>९</small></div>
-          <div style="grid-column:3;grid-row:3">घं<small>३</small></div>
+          <div class="up" style="grid-column:2;grid-row:2">स्तु<small>१०</small></div>
+          <div class="up" style="grid-column:3;grid-row:2">टा<small>४</small></div>
+          <div class="dn" style="grid-column:2;grid-row:3">मो<small>९</small></div>
+          <div class="dn" style="grid-column:3;grid-row:3">घं<small>३</small></div>
           <div class="sb" style="grid-column:4;grid-row:3">न<small>८</small></div>
           <div class="sb" style="grid-column:2;grid-row:4">ॐ<small>१</small></div>
           <div class="cc">र्ण<small>७</small></div>
