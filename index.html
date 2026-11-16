@@ -1214,7 +1214,7 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
 
     var base = (m <= 4 && lm.mon >= 7) ? y - 1 : y;
     var hinduVS = base + 57;
-    var years = { hinduVS: hinduVS, jainVS: lm.mon <= 6 ? hinduVS - 1 : hinduVS, veer: (lm.mon <= 6 ? hinduVS - 1 : hinduVS) + 470, shaka: base - 78, kali: base + 3101 };
+    var years = { hinduVS: hinduVS, jainVS: lm.mon <= 6 ? hinduVS - 1 : hinduVS, veer: (lm.mon <= 6 ? hinduVS - 1 : hinduVS) + 470, shaka: base - 78, kali: base + 3102, srishti: base + 1955883102 };
 
     function part(name, k, desc) {
       var u = len / 8;
@@ -1712,7 +1712,8 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
     rows.push({ name: 'वीर निर्वाण संवत्', right: String(D.years.veer), rc: 'val', desc: 'कार्तिक सुद १ से बदलता है' });
     rows.push({ name: 'विक्रम संवत् (हिंदू)', right: String(D.years.hinduVS), rc: 'val', desc: 'चैत्र सुद १ से बदलता है' });
     rows.push({ name: 'शक संवत्', right: String(D.years.shaka), rc: 'val' });
-    rows.push({ name: 'कलि वर्ष', right: String(D.years.kali), rc: 'val' });
+    rows.push({ name: 'कलि वर्ष (वर्तमान)', right: String(D.years.kali), rc: 'val', desc: 'चैत्र सुद १ से बदलता है' });
+    rows.push({ name: 'सृष्टि संवत् (वर्तमान)', right: D.years.srishti.toLocaleString('en-IN'), rc: 'val', desc: 'चैत्र सुद १ से बदलता है' });
     rows.push({ name: 'ऋतु', right: D.ritu, rc: 'val' });
     rows.push({ name: 'सूर्य राशि', right: D.sunRashi, rc: 'val' });
     rows.push({ name: 'चंद्र राशि', right: D.moonRashi.name, rc: 'val', desc: D.moonRashi.end ? untilHtml(D.moonRashi.end, sel) : '' });
