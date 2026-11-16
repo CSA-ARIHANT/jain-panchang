@@ -562,6 +562,15 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
   .cal-grid.sr { animation: calR .22s ease-out; }
   @keyframes calL { from { transform: translateX(36px); opacity: .25; } to { transform: none; opacity: 1; } }
   @keyframes calR { from { transform: translateX(-36px); opacity: .25; } to { transform: none; opacity: 1; } }
+.nm-wrap { display: inline; }
+.ib { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; margin-left: 8px; padding: 0; vertical-align: 1px; border: 1px solid var(--accent); border-radius: 50%; background: transparent; color: var(--accent); font: 600 0.78rem/1 inherit; cursor: pointer; position: relative; }
+.ib::after { content: ""; position: absolute; inset: -11px; }
+.ib[aria-expanded="true"] { background: var(--accent); color: var(--accent-ink); }
+.info { margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: var(--now-bg); color: var(--ink); font-size: 0.88rem; line-height: 1.55; font-weight: 400; }
+.info[hidden] { display: none; }
+.info p { margin: 0; }
+.info p + p { margin-top: 6px; }
+.info b { font-weight: 600; }
 </style>
 <main class="app">
   <header class="top">
@@ -1346,9 +1355,38 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
   }
   function untilHtml(ms, sel) { return atHtml(ms, sel) + ' तक'; }
   function durText(ms) { var mins = Math.round(ms / 60000); return Math.floor(mins / 60) + ' घं ' + pad(mins % 60) + ' मि'; }
+  /* संवत् की जानकारी: नाम के पास ⓘ दबाने पर खुलती है */
+  var SAMVAT_INFO = {
+    veer: { t: "भगवान महावीर के निर्वाण से शुरू हुआ जैन काल-गणना का संवत्। जैन परंपरा में निर्वाण ई.पू. 527 में माना जाता है।",
+            syn: "महावीर संवत्, वीर संवत्, जैन संवत्", rel: "विक्रम संवत् + 470 (विक्रम संवत् से 470 वर्ष पहले शुरू)", chg: "कार्तिक सुद १ (दीपावली के अगले दिन) से नया वर्ष" },
+    vikram: { t: "राजा विक्रमादित्य द्वारा शुरू माना जाने वाला संवत्, उत्तर भारत में सबसे ज़्यादा प्रचलित हिंदू पंचांग वर्ष।",
+              syn: "विक्रमी संवत्, विक्रमाब्द, मालव संवत्, कृत संवत्", rel: "ई. सन् + 57 (ई.पू. 57 से शुरू)", chg: "चैत्र सुद १ से (गुजरात में कार्तिक सुद १ से)" },
+    shaka: { t: "शक संवत् का प्रारंभ ई. सन् 78 से माना जाता है। भारत सरकार का राष्ट्रीय पंचांग इसी पर आधारित है।",
+             syn: "शकाब्द, शालिवाहन शक", rel: "ई. सन् − 78", chg: "चैत्र सुद १ से" },
+    kali: { t: "कलियुग के आरंभ (ई.पू. 3102) से गिना जाने वाला वर्ष। पूजा के संकल्प में यही वर्ष बोला जाता है। यहाँ वर्तमान (चालू) वर्ष दिखाया गया है, यानी बीते वर्ष + 1।",
+            syn: "कलि संवत्, कलि वर्ष, युगाब्द, कल्यब्द", rel: "ई. सन् + 3102 (चालू वर्ष)", chg: "चैत्र सुद १ से" },
+    srishti: { t: "इस कल्प में सृष्टि के आरंभ से गिना जाने वाला वर्ष। इसमें कलियुग से पहले के युगों के वर्ष जुड़े होते हैं। यहाँ वर्तमान (चालू) वर्ष दिखाया गया है।",
+               syn: "सृष्टि वर्ष, सृष्ट्यब्द", rel: "कलि वर्ष + 1,95,58,80,000", chg: "चैत्र सुद १ से। अलग-अलग परंपराओं में गणना थोड़ी अलग मिल सकती है" }
+  };
+  function infoHtml(k) {
+    var i = SAMVAT_INFO[k]; if (!i) return '';
+    return '<div class="info" hidden><p>' + i.t + '</p><p><b>अन्य नाम:</b> ' + i.syn + '</p><p><b>गणना:</b> ' + i.rel + '</p><p><b>वर्ष बदलना:</b> ' + i.chg + '</p></div>';
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.ib') : null;
+    if (!b) return;
+    var panel = b.parentNode.querySelector('.info');
+    if (!panel) return;
+    var open = panel.hasAttribute('hidden');
+    if (open) panel.removeAttribute('hidden'); else panel.setAttribute('hidden', '');
+    b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
   function row(o) {
-    return '<li class="' + (o.cls || '') + '"><div><span class="nm">' + o.name + '</span>' + (o.chip || '') + (o.badge || '') +
-           (o.desc ? '<span class="ds">' + o.desc + '</span>' : '') + '</div><div class="' + (o.rc || 'tm') + '">' + o.right + '</div></li>';
+    return '<li class="' + (o.cls || '') + '"><div><span class="nm">' + o.name + '</span>' +
+           (o.info ? '<button type="button" class="ib" aria-expanded="false" aria-label="' + o.name + ' की जानकारी">ⓘ</button>' : '') +
+           (o.chip || '') + (o.badge || '') +
+           (o.desc ? '<span class="ds">' + o.desc + '</span>' : '') + (o.info ? infoHtml(o.info) : '') +
+           '</div><div class="' + (o.rc || 'tm') + '">' + o.right + '</div></li>';
   }
   function chipHtml(tag) { return '<span class="chip ' + tag + '">' + TAGTXT[tag] + '</span>'; }
   function dayOf(date) { return VARA[new Date(Date.UTC(date.y, date.m - 1, date.d)).getUTCDay()]; }
@@ -1709,11 +1747,11 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
     var av = avFor(sel.y, sel.m, sel.d), ar = arFor(sel.y, sel.m, sel.d);
     if (av) rows.unshift({ name: 'अवकाश', right: '', desc: av });
     if (ar) rows.unshift({ name: 'राष्ट्रीय एवं आर्य त्यौहार', right: '', desc: ar });
-    rows.push({ name: 'वीर निर्वाण संवत्', right: String(D.years.veer), rc: 'val', desc: 'कार्तिक सुद १ से बदलता है' });
-    rows.push({ name: 'विक्रम संवत् (हिंदू)', right: String(D.years.hinduVS), rc: 'val', desc: 'चैत्र सुद १ से बदलता है' });
-    rows.push({ name: 'शक संवत्', right: String(D.years.shaka), rc: 'val' });
-    rows.push({ name: 'कलि वर्ष (वर्तमान)', right: String(D.years.kali), rc: 'val', desc: 'चैत्र सुद १ से बदलता है' });
-    rows.push({ name: 'सृष्टि संवत् (वर्तमान)', right: D.years.srishti.toLocaleString('en-IN'), rc: 'val', desc: 'चैत्र सुद १ से बदलता है' });
+    rows.push({ name: 'वीर निर्वाण संवत्', right: String(D.years.veer), rc: 'val', desc: 'कार्तिक सुद १ से बदलता है', info: 'veer' });
+    rows.push({ name: 'विक्रम संवत् (हिंदू)', right: String(D.years.hinduVS), rc: 'val', desc: 'चैत्र सुद १ से बदलता है', info: 'vikram' });
+    rows.push({ name: 'शक संवत्', right: String(D.years.shaka), rc: 'val', info: 'shaka' });
+    rows.push({ name: 'कलि वर्ष (वर्तमान)', right: String(D.years.kali), rc: 'val', desc: 'चैत्र सुद १ से बदलता है', info: 'kali' });
+    rows.push({ name: 'सृष्टि संवत् (वर्तमान)', right: D.years.srishti.toLocaleString('en-IN'), rc: 'val', desc: 'चैत्र सुद १ से बदलता है', info: 'srishti' });
     rows.push({ name: 'ऋतु', right: D.ritu, rc: 'val' });
     rows.push({ name: 'सूर्य राशि', right: D.sunRashi, rc: 'val' });
     rows.push({ name: 'चंद्र राशि', right: D.moonRashi.name, rc: 'val', desc: D.moonRashi.end ? untilHtml(D.moonRashi.end, sel) : '' });
