@@ -538,6 +538,11 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
 .dpv .mt b { font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
 .dpv .mt span small { display: block; color: #38576a; font-size: .85rem; }
 </style>
+<style id="share-ui">
+.share-btn { display: block; width: 100%; margin-top: 16px; min-height: 48px; padding: 0 14px; font: inherit; font-weight: 600; color: inherit; background: rgba(255,255,255,.22); border: 1px solid rgba(255,255,255,.6); border-radius: 14px; cursor: pointer; }
+.share-btn:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.share-btn[disabled] { opacity: .6; cursor: wait; }
+</style>
 <style id="tabs-ui">
   .tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 8px; border-radius: 18px;
     background: rgba(232,246,255,.94); border: 1px solid rgba(190,143,42,.72); box-shadow: 0 8px 20px rgba(15,45,65,.16);
@@ -631,6 +636,7 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
       <div class="mid"><span class="lbl" id="lblM">दिनमान</span><b id="dinmanTxt"></b></div>
       <div class="r"><span class="lbl" id="lblR">सूर्यास्त</span><b id="setTxt"></b></div>
     </div>
+    <button type="button" class="share-btn" id="shareBtn">📲 आज का पंचांग WhatsApp पर भेजें</button>
   </section>
 
   <section class="card nowcard" aria-labelledby="nowTitle">
@@ -1720,6 +1726,30 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
     });
     $('pachList').innerHTML = html;
 
+    /* शेयर कार्ड के लिए आज (चुनी हुई तारीख़) का डेटा */
+    (function () {
+      function tx(ms) { var p = parts(ms); return period(p.h) + ' ' + clock(p); }
+      function rg(s, e) {
+        var a = parts(s), b = parts(e), pa = period(a.h), pb = period(b.h);
+        return pa + ' ' + clock(a) + ' – ' + (pa === pb ? '' : pb + ' ') + clock(b);
+      }
+      var kpTxt = kalFor(sel.y, sel.m, sel.d);
+      window.PANCHANG_SHARE = {
+        city: LOCNAME.split(',')[0],
+        date: VARA[D.wd] + ', ' + sel.d + ' ' + MONTHS[sel.m - 1] + ' ' + sel.y,
+        tithi: D.tithi.paksha + ' ' + D.tithi.name,
+        jain: D.jain.purn + ' · वीर संवत् ' + D.years.veer,
+        special: kpTxt ? String(kpTxt).replace(/<[^>]*>/g, '') : '',
+        sunrise: tx(D.rise),
+        sunset: tx(D.set),
+        pachakkhan: D.pach.map(function (r) { return { name: r.name, time: tx(r.t) }; }),
+        chaughadiya: D.chDay.map(function (s) {
+          return { name: s.name, time: rg(s.s, s.e), type: s.tag === 'good' ? 'shubh' : s.tag === 'bad' ? 'ashubh' : 'mix' };
+        }),
+        url: location.origin + location.pathname
+      };
+    })();
+
     /* chaughadiya / hora */
     var NG = D;
     if (isToday && now < D.rise) { var pd = ymd(sel.y, sel.m, sel.d - 1); NG = computeDay(pd.y, pd.m, pd.d); }
@@ -1923,6 +1953,21 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
   safeRender();
   var dg = $('diag'); if (dg && !/त्रुटि/.test($('tithiName').textContent)) dg.parentNode.removeChild(dg);
   setInterval(function () { if (!document.hidden) safeRender(); }, 30000);
+})();
+</script>
+<script src="share-card.js"></script>
+<script>
+(function () {
+  var b = document.getElementById('shareBtn');
+  if (!b) return;
+  b.addEventListener('click', function () {
+    if (!window.shareDailyPanchang || !window.PANCHANG_SHARE) return;
+    var t = b.textContent;
+    b.disabled = true; b.textContent = 'कार्ड बन रहा है…';
+    Promise.resolve(window.shareDailyPanchang(window.PANCHANG_SHARE)).catch(function () {}).then(function () {
+      b.disabled = false; b.textContent = t;
+    });
+  });
 })();
 </script>
 <script src="supabase-counter.js"></script>
