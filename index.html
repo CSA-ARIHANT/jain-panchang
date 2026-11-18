@@ -1733,13 +1733,22 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
         var a = parts(s), b = parts(e), pa = period(a.h), pb = period(b.h);
         return pa + ' ' + clock(a) + ' – ' + (pa === pb ? '' : pb + ' ') + clock(b);
       }
-      var kpTxt = kalFor(sel.y, sel.m, sel.d);
+      var sk = key3(sel.y, sel.m, sel.d);
+      function clean(a) { return (a || []).map(function (t) { return String(t).replace(/<[^>]*>/g, '').trim(); }).filter(Boolean); }
       window.PANCHANG_SHARE = {
         city: LOCNAME.split(',')[0],
         date: VARA[D.wd] + ', ' + sel.d + ' ' + MONTHS[sel.m - 1] + ' ' + sel.y,
         tithi: D.tithi.paksha + ' ' + D.tithi.name,
-        jain: D.jain.purn + ' · वीर संवत् ' + D.years.veer,
-        special: kpTxt ? String(kpTxt).replace(/<[^>]*>/g, '') : '',
+        jain: D.jain.purn,
+        nakshatra: D.nak.name,
+        samvat: [
+          { name: 'वीर निर्वाण', val: String(D.years.veer) },
+          { name: 'विक्रम', val: String(D.years.hinduVS) },
+          { name: 'शक', val: String(D.years.shaka) }
+        ],
+        parv: clean((M_KAL[sk] || []).concat(M_PARV[sk] || [])),
+        avkash: clean(M_AVK[sk]),
+        tyohar: clean(M_ARYA[sk]),
         sunrise: tx(D.rise),
         sunset: tx(D.set),
         pachakkhan: D.pach.map(function (r) { return { name: r.name, time: tx(r.t) }; }),
