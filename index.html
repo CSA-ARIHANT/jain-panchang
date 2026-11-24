@@ -248,12 +248,12 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
 /* ===== तैरते बटन: आज का पंचांग शेयर + फीडबैक ===== */
 .fab-wrap { position: fixed; right: 14px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 60; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; pointer-events: none; }
 .fab-row { display: flex; align-items: center; gap: 8px; pointer-events: none; }
-.fab { pointer-events: auto; width: 54px; height: 54px; border-radius: 50%; border: 2px solid rgba(255,255,255,.9); display: grid; place-items: center; cursor: pointer; color: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.28); -webkit-tap-highlight-color: transparent; transition: transform .15s; }
+.fab { pointer-events: auto; width: 50px; height: 50px; border-radius: 50%; border: 2px solid rgba(255,255,255,.9); display: grid; place-items: center; cursor: pointer; color: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.28); -webkit-tap-highlight-color: transparent; transition: transform .15s; }
 .fab:active { transform: scale(.93); }
-.fab svg { width: 28px; height: 28px; fill: currentColor; }
-.fab-wa { background: #25D366; width: 58px; height: 58px; }
-.fab-fb { background: linear-gradient(160deg, #7A50E2, #4B2AA8); width: 46px; height: 46px; }
-.fab-fb svg { width: 22px; height: 22px; }
+.fab svg { width: 26px; height: 26px; fill: currentColor; }
+.fab-wa { background: #25D366; }
+.fab-fb { background: linear-gradient(160deg, #7A50E2, #4B2AA8); }
+.fab-fb svg { width: 24px; height: 24px; }
 .fab[disabled] { opacity: .65; cursor: wait; }
 .fab-tip { pointer-events: none; background: rgba(20,20,30,.82); color: #fff; font-size: .78rem; font-weight: 600; padding: 6px 11px; border-radius: 14px; white-space: nowrap; opacity: 0; transform: translateX(6px); transition: opacity .3s, transform .3s; }
 .fab-tip.show { opacity: 1; transform: none; }
