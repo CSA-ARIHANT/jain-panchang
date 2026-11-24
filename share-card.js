@@ -16,8 +16,31 @@
 
   var FONT = "'Mukta', 'Noto Sans Devanagari', sans-serif";
   var W = 1080, M = 40, CW = W - 2 * M, GAP = 26;
-  var INK = '#0B2A44', DIM = '#4A7396';
-  var CHIP = { samvat: '#1E78B4', parv: '#1B55A6', avkash: '#0E8A8A', tyohar: '#5658C9', pach: '#2A8BC9', ch: '#1F9A6B' };
+  /* वार के अनुसार रंग (ग्रह-परंपरा): रवि=नारंगी, सोम=चाँदी, मंगल=लाल, बुध=हरा, गुरु=सुनहरा, शुक्र=गुलाबी, शनि=नीला-जामुनी */
+  var DAYPAL = [
+    { h: 22,  s: 90, dl: 36, name: 'ravi' },
+    { h: 215, s: 16, dl: 34, name: 'som' },
+    { h: 6,   s: 78, dl: 38, name: 'mangal' },
+    { h: 142, s: 55, dl: 28, name: 'budh' },
+    { h: 44,  s: 90, dl: 28, name: 'guru' },
+    { h: 334, s: 66, dl: 40, name: 'shukra' },
+    { h: 236, s: 52, dl: 38, name: 'shani' }
+  ];
+  var INK, DIM, CHIP, PAL;
+  function hsl(h, s, l, a) { return 'hsla(' + (((h % 360) + 360) % 360) + ',' + s + '%,' + l + '%,' + (a == null ? 1 : a) + ')'; }
+  function setPalette(wd) {
+    var q = DAYPAL[(wd >= 0 && wd <= 6) ? wd : 0], h = q.h, s = q.s;
+    PAL = { h: h, s: s, dl: q.dl };
+    INK = hsl(h, Math.min(s, 45), 13);
+    DIM = hsl(h, Math.round(s * 0.5), 34);
+    CHIP = {
+      samvat: hsl(h, s, q.dl + 2), parv: hsl(h - 14, s, q.dl), avkash: hsl(h + 20, s, q.dl),
+      tyohar: hsl(h + 38, s, q.dl + 2), pach: hsl(h + 8, s, q.dl + 3), ch: hsl(h + 70, Math.max(s - 10, 14), q.dl)
+    };
+    if (q.name === 'budh') CHIP.ch = hsl(h - 30, 60, 30);
+    if (q.name === 'som') CHIP.ch = hsl(160, 35, 34);
+  }
+  setPalette(0);
 
   function loadFonts() {
     if (!document.fonts || !document.fonts.load) return Promise.resolve();
@@ -69,12 +92,12 @@
   /* ---------- glass look ---------- */
   function glass(ctx, x, y, w, h, r, dark) {
     ctx.save();
-    ctx.shadowColor = dark ? 'rgba(15,70,130,.35)' : 'rgba(40,100,160,.20)';
+    ctx.shadowColor = dark ? hsl(PAL.h, PAL.s, 30, .35) : hsl(PAL.h, PAL.s, 40, .20);
     ctx.shadowBlur = 40;
     ctx.shadowOffsetY = 14;
     var g = ctx.createLinearGradient(0, y, 0, y + h);
-    if (dark) { g.addColorStop(0, 'rgba(30,110,185,.96)'); g.addColorStop(1, 'rgba(78,170,232,.92)'); }
-    else { g.addColorStop(0, 'rgba(255,255,255,.80)'); g.addColorStop(1, 'rgba(235,247,255,.50)'); }
+    if (dark) { g.addColorStop(0, hsl(PAL.h, PAL.s, PAL.dl, .97)); g.addColorStop(1, hsl(PAL.h, PAL.s, PAL.dl + 10, .94)); }
+    else { g.addColorStop(0, 'rgba(255,255,255,.82)'); g.addColorStop(1, hsl(PAL.h, Math.min(PAL.s + 20, 100), 96, .55)); }
     ctx.fillStyle = g;
     rr(ctx, x, y, w, h, r);
     ctx.fill();
@@ -269,14 +292,14 @@
 
   /* ---------- background ---------- */
   function background(ctx, H) {
-    var g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, '#F3FAFF');
-    g.addColorStop(0.5, '#D9EEFC');
-    g.addColorStop(1, '#BDDDF5');
+    var h = PAL.h, sa = PAL.s, g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, hsl(h, Math.min(sa + 20, 100), 97));
+    g.addColorStop(0.5, hsl(h, Math.min(sa + 10, 90), 90));
+    g.addColorStop(1, hsl(h, sa, 81));
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
-    [[180, 260, 560, 'rgba(110,185,255,.55)'], [920, H * 0.42, 600, 'rgba(160,226,255,.65)'],
-     [200, H * 0.76, 640, 'rgba(95,165,240,.42)'], [900, H * 0.97, 560, 'rgba(140,210,255,.55)']].forEach(function (b) {
+    [[180, 260, 560, hsl(h, sa, 68, .55), 0], [920, H * 0.42, 600, hsl(h + 18, sa, 76, .65), 0],
+     [200, H * 0.76, 640, hsl(h - 14, sa, 62, .42), 0], [900, H * 0.97, 560, hsl(h + 10, sa, 72, .55), 0]].forEach(function (b) {
       var rg = ctx.createRadialGradient(b[0], b[1], 0, b[0], b[1], b[2]);
       rg.addColorStop(0, b[3]);
       rg.addColorStop(1, 'rgba(255,255,255,0)');
@@ -288,6 +311,7 @@
   /* ---------- build ---------- */
   function build(d) {
     return loadFonts().then(function () {
+      setPalette(d.wd);
       var blocks = [
         headerBlock(d),
         sunBlock(d),

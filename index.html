@@ -244,6 +244,24 @@ body { background: var(--page-bg); background-attachment: fixed; background-colo
 .rv-stars { display: flex; gap: 2px; }
 .rv-stars button { background: none; border: 0; font-size: 32px; line-height: 1; min-width: 44px; min-height: 44px; color: var(--muted); cursor: pointer; opacity: .55; }
 .rv-stars button.on { color: #E8A317; opacity: 1; }
+
+/* ===== तैरते बटन: आज का पंचांग शेयर + फीडबैक ===== */
+.fab-wrap { position: fixed; right: 14px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 60; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; pointer-events: none; }
+.fab-row { display: flex; align-items: center; gap: 8px; pointer-events: none; }
+.fab { pointer-events: auto; width: 54px; height: 54px; border-radius: 50%; border: 2px solid rgba(255,255,255,.9); display: grid; place-items: center; cursor: pointer; color: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.28); -webkit-tap-highlight-color: transparent; transition: transform .15s; }
+.fab:active { transform: scale(.93); }
+.fab svg { width: 28px; height: 28px; fill: currentColor; }
+.fab-wa { background: #25D366; width: 58px; height: 58px; }
+.fab-fb { background: linear-gradient(160deg, #7A50E2, #4B2AA8); width: 46px; height: 46px; }
+.fab-fb svg { width: 22px; height: 22px; }
+.fab[disabled] { opacity: .65; cursor: wait; }
+.fab-tip { pointer-events: none; background: rgba(20,20,30,.82); color: #fff; font-size: .78rem; font-weight: 600; padding: 6px 11px; border-radius: 14px; white-space: nowrap; opacity: 0; transform: translateX(6px); transition: opacity .3s, transform .3s; }
+.fab-tip.show { opacity: 1; transform: none; }
+@media (min-width: 900px) { .fab-wrap { right: 24px; } }
+
+.g-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: #fff; color: #3c4043; border: 1px solid #dadce0; font-weight: 600; }
+.g-user { font-weight: 600; padding: 6px 2px; }
+.g-out { background: none; border: 0; color: var(--accent); text-decoration: underline; font: inherit; cursor: pointer; margin-left: 6px; }
 </style>
 
 <style id="crystal-skin">
@@ -1010,6 +1028,13 @@ img, svg, input, select, textarea { max-width: 100%; }
     <h2 id="rvTitle">समीक्षा और रेटिंग</h2>
     <p class="sub" id="rvSum">—</p>
     <ul class="rows" id="rvList"></ul>
+    <div class="fb-form">
+      <div id="gAuth" class="g-auth" hidden>
+        <button type="button" id="gIn" class="fb-send g-btn"><svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg><span>Google से लॉगिन करें (वैकल्पिक)</span></button>
+        <p class="sub">लॉगिन ज़रूरी नहीं है। लॉगिन करने पर आपका नाम अपने-आप भर जाएगा।</p>
+      </div>
+      <div id="gUser" class="g-user" hidden><span id="gName"></span> <button type="button" id="gOut" class="g-out">लॉगआउट</button></div>
+    </div>
     <div class="fb-form">
       <div id="rvStars" class="rv-stars" role="radiogroup" aria-label="रेटिंग चुनें">
         <button type="button" role="radio" aria-checked="false" data-v="1" aria-label="1 तारा">★</button><button type="button" role="radio" aria-checked="false" data-v="2" aria-label="2 तारे">★</button><button type="button" role="radio" aria-checked="false" data-v="3" aria-label="3 तारे">★</button><button type="button" role="radio" aria-checked="false" data-v="4" aria-label="4 तारे">★</button><button type="button" role="radio" aria-checked="false" data-v="5" aria-label="5 तारे">★</button>
@@ -1882,36 +1907,44 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
     });
     $('pachList').innerHTML = html;
 
-    /* शेयर कार्ड के लिए आज (चुनी हुई तारीख़) का डेटा */
+    /* शेयर कार्ड के लिए डेटा: चुनी हुई तारीख़ (PANCHANG_SHARE) और हमेशा आज (getTodayShare) */
     (function () {
       function tx(ms) { var p = parts(ms); return period(p.h) + ' ' + clock(p); }
       function rg(s, e) {
         var a = parts(s), b = parts(e), pa = period(a.h), pb = period(b.h);
         return pa + ' ' + clock(a) + ' – ' + (pa === pb ? '' : pb + ' ') + clock(b);
       }
-      var sk = key3(sel.y, sel.m, sel.d);
       function clean(a) { return (a || []).map(function (t) { return String(t).replace(/<[^>]*>/g, '').trim(); }).filter(Boolean); }
-      window.PANCHANG_SHARE = {
-        city: LOCNAME.split(',')[0],
-        date: VARA[D.wd] + ', ' + sel.d + ' ' + MONTHS[sel.m - 1] + ' ' + sel.y,
-        tithi: D.tithi.paksha + ' ' + D.tithi.name,
-        jain: D.jain.purn,
-        nakshatra: D.nak.name,
-        samvat: [
-          { name: 'वीर निर्वाण', val: String(D.years.veer) },
-          { name: 'विक्रम', val: String(D.years.hinduVS) },
-          { name: 'शक', val: String(D.years.shaka) }
-        ],
-        parv: clean((M_KAL[sk] || []).concat(M_PARV[sk] || [])),
-        avkash: clean(M_AVK[sk]),
-        tyohar: clean(M_ARYA[sk]),
-        sunrise: tx(D.rise),
-        sunset: tx(D.set),
-        pachakkhan: D.pach.map(function (r) { return { name: r.name, time: tx(r.t) }; }),
-        chaughadiya: D.chDay.map(function (s) {
-          return { name: s.name, time: rg(s.s, s.e), type: s.tag === 'good' ? 'shubh' : s.tag === 'bad' ? 'ashubh' : 'mix' };
-        }),
-        url: location.origin + location.pathname
+      function shareFor(sel, D) {
+        var sk = key3(sel.y, sel.m, sel.d);
+        return {
+          wd: D.wd,
+          city: LOCNAME.split(',')[0],
+          date: VARA[D.wd] + ', ' + sel.d + ' ' + MONTHS[sel.m - 1] + ' ' + sel.y,
+          tithi: D.tithi.paksha + ' ' + D.tithi.name,
+          jain: D.jain.purn,
+          nakshatra: D.nak.name,
+          samvat: [
+            { name: 'वीर निर्वाण', val: String(D.years.veer) },
+            { name: 'विक्रम', val: String(D.years.hinduVS) },
+            { name: 'शक', val: String(D.years.shaka) }
+          ],
+          parv: clean((M_KAL[sk] || []).concat(M_PARV[sk] || [])),
+          avkash: clean(M_AVK[sk]),
+          tyohar: clean(M_ARYA[sk]),
+          sunrise: tx(D.rise),
+          sunset: tx(D.set),
+          pachakkhan: D.pach.map(function (r) { return { name: r.name, time: tx(r.t) }; }),
+          chaughadiya: D.chDay.map(function (s) {
+            return { name: s.name, time: rg(s.s, s.e), type: s.tag === 'good' ? 'shubh' : s.tag === 'bad' ? 'ashubh' : 'mix' };
+          }),
+          url: location.origin + location.pathname
+        };
+      }
+      window.PANCHANG_SHARE = shareFor(sel, D);
+      window.getTodayShare = function () {
+        var t = panchangDay(Date.now());
+        return shareFor(t, computeDay(t.y, t.m, t.d));
       };
     })();
 
@@ -2136,6 +2169,33 @@ if(mb)mb.addEventListener('click',function(){var t=bld();if(!t)return;window.loc
       b.disabled = false; b.innerHTML = t;
     });
   });
+})();
+</script>
+<div class="fab-wrap" id="fabWrap">
+  <div class="fab-row"><span class="fab-tip" id="fbTip">राय / सुधार बताएँ</span><button type="button" class="fab fab-fb" id="fabFb" aria-label="फीडबैक दें"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg></button></div>
+  <div class="fab-row"><span class="fab-tip" id="waTip">आज का पंचांग भेजें</span><button type="button" class="fab fab-wa" id="fabWa" aria-label="आज का पंचांग WhatsApp पर शेयर करें"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.04 3C9.4 3 4 8.4 4 15.03c0 2.12.55 4.19 1.6 6.01L4 29l8.14-1.56a12 12 0 0 0 3.9.65h.01C22.68 28.09 28 22.69 28 16.06 28 9.4 22.7 3 16.04 3zm0 22.1h-.01a10 10 0 0 1-5.1-1.4l-.37-.22-4.83.93.99-4.7-.24-.38a9.98 9.98 0 0 1-1.54-5.3c0-5.52 4.5-10.02 10.04-10.02 5.5 0 9.96 4.5 9.96 10.04 0 5.52-4.48 10.05-9.9 10.05zm5.5-7.5c-.3-.15-1.78-.88-2.06-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.95 1.18-.18.2-.35.22-.65.08-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.78-1.67-2.08-.18-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.68-1.64-.93-2.25-.24-.58-.5-.5-.68-.51h-.58c-.2 0-.53.08-.8.38-.28.3-1.05 1.03-1.05 2.5 0 1.48 1.08 2.9 1.23 3.1.15.2 2.12 3.23 5.13 4.53.72.3 1.28.5 1.72.64.72.23 1.37.2 1.88.12.57-.08 1.78-.73 2.03-1.43.25-.7.25-1.3.18-1.43-.08-.13-.28-.2-.58-.35z"/></svg></button></div>
+</div>
+<script>
+(function () {
+  var wa = document.getElementById('fabWa'), fb = document.getElementById('fabFb');
+  if (!wa) return;
+  wa.addEventListener('click', function () {
+    if (!window.shareDailyPanchang || !window.getTodayShare) return;
+    wa.disabled = true;
+    Promise.resolve().then(function () { return window.shareDailyPanchang(window.getTodayShare()); })
+      .catch(function () {}).then(function () { wa.disabled = false; });
+  });
+  fb.addEventListener('click', function () {
+    var t = document.getElementById('t-fb');
+    if (t) t.click();
+    var s = document.getElementById('rvBox');
+    var target = (s && s.style.display !== 'none') ? s : document.getElementById('fbTitle');
+    setTimeout(function () { try { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {} }, 50);
+  });
+  /* लेबल कुछ सेकंड दिखकर हट जाते हैं */
+  var tips = [document.getElementById('waTip'), document.getElementById('fbTip')];
+  setTimeout(function () { tips.forEach(function (t) { t.classList.add('show'); }); }, 1200);
+  setTimeout(function () { tips.forEach(function (t) { t.classList.remove('show'); }); }, 6500);
 })();
 </script>
 <script src="supabase-counter.js"></script>
