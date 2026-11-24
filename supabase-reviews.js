@@ -84,7 +84,13 @@
     var go = false; try { go = sessionStorage.getItem('goFb') === '1'; sessionStorage.removeItem('goFb'); } catch (e) {}
     if (go && session) {
       var t = document.getElementById('t-fb'); if (t) t.click();
-      var o = document.getElementById('rvOut'); if (o) o.textContent = 'लॉगिन हो गया। अब अपनी समीक्षा लिखें।';
+      var o = document.getElementById('rvOut'); if (o) o.textContent = 'लॉगिन हो गया। अब तारे चुनकर अपनी समीक्षा लिखें।';
+      /* टैब बदलने से पेज ऊपर चला जाता है, इसलिए थोड़ी देर बाद सीधे समीक्षा-फ़ॉर्म तक ले जाते हैं */
+      var goForm = function () {
+        var g = document.getElementById('gUser') || document.getElementById('rvStars');
+        if (g) try { g.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+      };
+      setTimeout(goForm, 150); setTimeout(goForm, 700);
     }
   });
 

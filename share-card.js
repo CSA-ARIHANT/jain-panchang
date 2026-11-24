@@ -339,33 +339,84 @@
   }
 
   /* ---------- share ---------- */
+  function isMobile() {
+    var ua = navigator.userAgent || '';
+    return /Android|iPhone|iPad|iPod/i.test(ua) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(ua));
+  }
+
   function share(d) {
     if (!d) return Promise.resolve();
     return build(d).then(function (blob) {
-      if (!blob) return;
+      if (!blob) { alert('इमेज नहीं बन पाई। कृपया दोबारा कोशिश करें।'); return; }
       var file = new File([blob], 'jain-panchang.png', { type: 'image/png' });
       var text = '🙏 जय जिनेंद्र\n' + (d.date || '') + ' का जैन पंचांग\n' + (d.url || location.href);
 
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      /* मोबाइल: सीधे share sheet (WhatsApp चुनें) */
+      if (isMobile() && navigator.canShare && navigator.canShare({ files: [file] })) {
         return navigator.share({ files: [file], text: text }).catch(function (e) {
           if (e && e.name === 'AbortError') return;
-          download(blob, text);
+          preview(blob, text);
         });
       }
-      download(blob, text);
-    });
+      /* कंप्यूटर: इमेज दिखाकर डाउनलोड / कॉपी / WhatsApp के बटन */
+      preview(blob, text);
+    }).catch(function () { alert('इमेज नहीं बन पाई। कृपया दोबारा कोशिश करें।'); });
   }
 
-  function download(blob, text) {
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'jain-panchang.png';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(function () {
-      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-    }, 600);
+  function preview(blob, text) {
+    var old = document.getElementById('pcShareBox');
+    if (old) old.parentNode.removeChild(old);
+    var url = URL.createObjectURL(blob);
+    var ov = document.createElement('div');
+    ov.id = 'pcShareBox';
+    ov.setAttribute('role', 'dialog');
+    ov.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(10,10,25,.62);display:flex;align-items:center;justify-content:center;padding:14px;font-family:' + FONT;
+    var card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border-radius:20px;max-width:440px;width:100%;max-height:96vh;overflow:auto;padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.4);text-align:center';
+    var img = document.createElement('img');
+    img.src = url; img.alt = 'आज का जैन पंचांग';
+    img.style.cssText = 'max-width:100%;max-height:52vh;border-radius:12px;border:1px solid #ddd;display:block;margin:0 auto 12px';
+    var msg = document.createElement('p');
+    msg.style.cssText = 'margin:0 0 12px;font-size:.92rem;color:#444;line-height:1.5';
+    msg.textContent = 'WhatsApp में भेजने के लिए: "इमेज कॉपी करें" दबाएँ, फिर WhatsApp खोलकर चैट में Ctrl+V करें।';
+    function btn(label, bg, fg, fn) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = label;
+      b.style.cssText = 'display:block;width:100%;margin:0 0 8px;padding:12px;border:0;border-radius:12px;font:600 1rem ' + FONT + ';cursor:pointer;background:' + bg + ';color:' + fg;
+      b.addEventListener('click', fn);
+      return b;
+    }
+    function close() { URL.revokeObjectURL(url); if (ov.parentNode) ov.parentNode.removeChild(ov); document.removeEventListener('keydown', onKey); }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    var status = document.createElement('p');
+    status.style.cssText = 'margin:4px 0 8px;font-size:.88rem;color:#1F6B35;min-height:1.2em';
+    var copyBtn = btn('📋 इमेज कॉपी करें', '#7A50E2', '#fff', function () {
+      if (navigator.clipboard && window.ClipboardItem) {
+        navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]).then(function () {
+          status.style.color = '#1F6B35'; status.textContent = 'कॉपी हो गई। अब WhatsApp में Ctrl+V करें।';
+        }, function () {
+          status.style.color = '#A12622'; status.textContent = 'कॉपी नहीं हुई। कृपया "इमेज डाउनलोड करें" दबाएँ।';
+        });
+      } else {
+        status.style.color = '#A12622'; status.textContent = 'इस ब्राउज़र में कॉपी नहीं होगी। कृपया "इमेज डाउनलोड करें" दबाएँ।';
+      }
+    });
+    var dlBtn = btn('⬇️ इमेज डाउनलोड करें', '#EFE9FF', '#3B1F8F', function () {
+      var a = document.createElement('a');
+      a.href = url; a.download = 'jain-panchang.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      status.style.color = '#1F6B35'; status.textContent = 'डाउनलोड हो गई। WhatsApp में इसे अटैच करें।';
+    });
+    var waBtn = btn('WhatsApp खोलें', '#25D366', '#fff', function () {
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+    });
+    var clBtn = btn('बंद करें', 'transparent', '#666', close);
+    card.appendChild(img); card.appendChild(msg); card.appendChild(copyBtn); card.appendChild(dlBtn);
+    card.appendChild(waBtn); card.appendChild(status); card.appendChild(clBtn);
+    ov.appendChild(card);
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(ov);
   }
 
   window.shareDailyPanchang = share;
